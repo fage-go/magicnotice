@@ -73,8 +73,6 @@
    java.lang.Object writeReplace();
    java.lang.Object readResolve();
 }
-# 友盟
--keep class com.umeng.** {*;}
 
 # model
 -keep class **.model.** {*;}
@@ -304,5 +302,4 @@ public static final int *;
 -keep class **.**WeekView {*;}
 -keep class **.**YearView {*;}
 
--keep class com.zhangshuo.magicnotice.BaseIniter {*;}
 -keep class com.zhangshuo.magicnotice.widget.**{*;}

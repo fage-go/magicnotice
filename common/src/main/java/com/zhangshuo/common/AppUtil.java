@@ -10,7 +10,6 @@ import com.zhangshuo.common.util.LocalDataUtil;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Locale;
 
 import me.jessyan.autosize.AutoSizeConfig;
@@ -27,36 +26,10 @@ public class AppUtil {
         Utils.init(application);
         isPrivacy = LocalDataUtil.get().getData(LocalDataUtil.BKEY_PRIVATE, false);
         ToastManager.get().init(application);
-        //channel
-        preInitBase();
     }
-
-    private void preInitBase() {
-        try {
-            Class clazz = Class.forName("com.zhangshuo.magicnotice.BaseIniter");
-            Method preMethod = clazz.getMethod("preInit", Application.class);
-            preMethod.setAccessible(true);
-            preMethod.invoke(null, application);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void initBase() {
-        try {
-            Class clazz = Class.forName("com.zhangshuo.magicnotice.BaseIniter");
-            Method preMethod = clazz.getMethod("init", Application.class);
-            preMethod.setAccessible(true);
-            preMethod.invoke(null, application);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public void afterAllowPrivacy() {
         isPrivacy = LocalDataUtil.get().getData(LocalDataUtil.BKEY_PRIVATE, false);
-        initBase();
     }
 
     private void initAutoSize() {

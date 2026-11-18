@@ -16,10 +16,6 @@ android {
         }
         oppo {
         }
-
-        productFlavors.all {
-            flavor -> flavor.manifestPlaceholders.put("UMENG_CHANNEL_VALUE", name)
-        }
     }
     applicationVariants.all { variant ->
         // 打包完成后输出路径

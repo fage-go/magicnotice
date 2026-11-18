@@ -29,9 +29,6 @@ android {
         versionName rootProject.ext.android.versionName
         buildConfigField 'String', 'LEGACY_EXPORT_KEY_B64', '"' + ownerSetting('MAGICNOTICE_LEGACY_EXPORT_KEY') + '"'
         buildConfigField 'String', 'LEGACY_EXPORT_IV_B64', '"' + ownerSetting('MAGICNOTICE_LEGACY_EXPORT_IV') + '"'
-        def telemetryAppId = System.getenv('MAGICNOTICE_UMENG_APP_ID') ?: ''
-        manifestPlaceholders.magicnoticeUmengScheme = telemetryAppId ==~ /[A-Za-z0-9]+/
-                ? 'um.' + telemetryAppId + '' : 'magicnotice-unconfigured'
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [

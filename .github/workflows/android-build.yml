@@ -1,4 +1,4 @@
-name: Android Debug Build
+name: Android Unsigned Release Build
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  debug-apks:
+  unsigned-release-apks:
     runs-on: ubuntu-22.04
     timeout-minutes: 30
     steps:
@@ -48,24 +48,60 @@ jobs:
           distribution: temurin
           java-version: '11'
 
-      - name: Assemble Chinese and English debug APKs
+      - name: Assemble Chinese and English unsigned release APKs
         if: steps.source.outputs.ready == 'true'
-        run: bash ./gradlew --no-daemon :app:assembleZhDebug :app:assembleEnDebug
+        shell: bash
+        run: |
+          unset MAGICNOTICE_KEYSTORE MAGICNOTICE_STORE_PASSWORD MAGICNOTICE_KEY_ALIAS MAGICNOTICE_KEY_PASSWORD
+          unset MAGICNOTICE_LEGACY_EXPORT_KEY MAGICNOTICE_LEGACY_EXPORT_IV
+          bash ./gradlew --no-daemon :app:assembleZhRelease :app:assembleEnRelease
 
-      - name: Upload Chinese debug APK
+      - name: Validate and stage the unsigned APKs
+        if: steps.source.outputs.ready == 'true'
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import re
+          import shutil
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          for locale in ("zh", "en"):
+              matches = sorted(Path("app/build/outputs").rglob(f"cicada_{locale}_release_v*.apk"))
+              if len(matches) != 1:
+                  raise SystemExit(f"Expected exactly one {locale} release APK; found {len(matches)}")
+              apk = matches[0]
+              with ZipFile(apk) as archive, apk.open("rb") as raw:
+                  names = set(archive.namelist())
+                  if archive.testzip() is not None or not {"AndroidManifest.xml", "classes.dex"} <= names:
+                      raise SystemExit(f"Invalid APK: {apk.name}")
+                  if any(re.fullmatch(r"META-INF/(?:[^/]+\.(?:SF|RSA|DSA|EC)|SIG-[^/]+)", n, re.I) for n in names):
+                      raise SystemExit(f"Unexpected v1 signature in {apk.name}")
+                  if archive.start_dir < 16:
+                      raise SystemExit(f"Invalid ZIP directory in {apk.name}")
+                  raw.seek(archive.start_dir - 16)
+                  if raw.read(16) == b"APK Sig Block 42":
+                      raise SystemExit(f"Unexpected APK signing block in {apk.name}")
+              output = Path("ci-apks") / locale
+              output.mkdir(parents=True, exist_ok=True)
+              shutil.copyfile(apk, output / apk.name.replace(".apk", "-unsigned.apk"))
+              print(f"Verified unsigned: {apk.name}")
+          PY
+
+      - name: Upload Chinese unsigned release APK
         if: steps.source.outputs.ready == 'true'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: MagicNotice-zh-debug
-          path: app/build/outputs/apk/zh/debug/*.apk
+          name: MagicNotice-zh-release-unsigned
+          path: ci-apks/zh/*.apk
           if-no-files-found: error
           retention-days: 14
 
-      - name: Upload English debug APK
+      - name: Upload English unsigned release APK
         if: steps.source.outputs.ready == 'true'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: MagicNotice-en-debug
-          path: app/build/outputs/apk/en/debug/*.apk
+          name: MagicNotice-en-release-unsigned
+          path: ci-apks/en/*.apk
           if-no-files-found: error
           retention-days: 14
