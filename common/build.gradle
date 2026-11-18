@@ -1,0 +1,93 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+    viewBinding {
+        enabled = true
+    }
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        AROUTER_MODULE_NAME    : project.getName(),
+                        'room.schemaLocation'  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"]
+            }
+        }
+        multiDexEnabled true
+
+        //ndk过滤
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
+
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['jniLibs', 'libs']
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
+}
+
+// common 业务层公共依赖
+dependencies {
+    api rootProject.ext.dependencies['appcompat']
+    api rootProject.ext.dependencies['support-v4']
+    api rootProject.ext.dependencies['annotations']
+    api rootProject.ext.dependencies['recyclerview']
+    api rootProject.ext.dependencies['flexbox']
+    api rootProject.ext.dependencies['cardview']
+    api rootProject.ext.dependencies['constraint-layout']
+    api rootProject.ext.dependencies['multidex']
+    api rootProject.ext.dependencies['material']
+    api rootProject.ext.dependencies['eventbus']
+    api rootProject.ext.dependencies['gson']
+    api rootProject.ext.dependencies['UtilCode']
+    api rootProject.ext.dependencies['eventbus']
+    api rootProject.ext.dependencies['Arouter']
+    api rootProject.ext.dependencies['immersionbar']
+    api rootProject.ext.dependencies['autosize']
+    api rootProject.ext.dependencies['SmartRefresh']
+    api rootProject.ext.dependencies['SmartRefresh-Header']
+    api rootProject.ext.dependencies['SmartRefresh-Footer']
+    api rootProject.ext.dependencies['Room']
+    api rootProject.ext.dependencies['Room-RxJava']
+    api rootProject.ext.dependencies['RxJava-Android']
+    api rootProject.ext.dependencies['mmkv']
+    api rootProject.ext.dependencies['BasePopup']//https://www.yuque.com/razerdp/basepopup/gscx3g
+    api rootProject.ext.dependencies['Glide']
+    annotationProcessor rootProject.ext.dependencies['Arouter-Compiler']
+    annotationProcessor rootProject.ext.dependencies['Room-Compiler']
+    annotationProcessor rootProject.ext.dependencies['Glide-Compiler']
+
+}

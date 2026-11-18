@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.zhangshuo.magicnotice.ui.view.ShowLightView
+        android:id="@+id/cutout_show_light"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/cutout_light_opt">
+
+        <TextView
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="@string/cutout_light_tip_opt_cancel"
+            android:textColor="@color/base_color_red"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="70dp"
+            android:layout_marginVertical="10dp"
+            android:gravity="center"
+            android:text="@string/cutout_light_tip_opt"
+            android:textColor="@color/base_font_txt_sub"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/btn_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|center_vertical"
+            android:gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="@string/cutout_light_tip_opt_yes"
+            android:textColor="@color/base_color_blue"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_gravity="bottom"
+            android:background="#e5e5e5" />
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cutout_light_opt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/base_white"
+        android:paddingTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/cutout_light_tip_left"
+            app:layout_constraintBottom_toTopOf="@+id/cutout_rocker_left"
+            app:layout_constraintLeft_toLeftOf="@+id/cutout_rocker_left"
+            app:layout_constraintRight_toRightOf="@+id/cutout_rocker_left" />
+
+        <com.zhangshuo.magicnotice.ui.view.RockerView
+            android:id="@+id/cutout_rocker_left"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/cutout_rocker_top" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/cutout_light_tip_top"
+            app:layout_constraintBottom_toTopOf="@+id/cutout_rocker_top"
+            app:layout_constraintLeft_toLeftOf="@+id/cutout_rocker_top"
+            app:layout_constraintRight_toRightOf="@+id/cutout_rocker_top" />
+
+        <com.zhangshuo.magicnotice.ui.view.RockerView
+            android:id="@+id/cutout_rocker_top"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/cutout_rocker_left"
+            app:layout_constraintRight_toLeftOf="@+id/cutout_rocker_right" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/cutout_light_tip_right"
+            app:layout_constraintBottom_toTopOf="@+id/cutout_rocker_right"
+            app:layout_constraintLeft_toLeftOf="@+id/cutout_rocker_right"
+            app:layout_constraintRight_toRightOf="@+id/cutout_rocker_right" />
+
+        <com.zhangshuo.magicnotice.ui.view.RockerView
+            android:id="@+id/cutout_rocker_right"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/cutout_rocker_top"
+            app:layout_constraintRight_toLeftOf="@+id/cutout_rocker_bottom" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/cutout_light_tip_bottom"
+            app:layout_constraintBottom_toTopOf="@+id/cutout_rocker_bottom"
+            app:layout_constraintLeft_toLeftOf="@+id/cutout_rocker_bottom"
+            app:layout_constraintRight_toRightOf="@+id/cutout_rocker_bottom" />
+
+        <com.zhangshuo.magicnotice.ui.view.RockerView
+            android:id="@+id/cutout_rocker_bottom"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/cutout_rocker_right"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+        <TextView
+            android:id="@+id/cutout_tv_raidus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="@string/cutout_light_tip_raidus"
+            android:textColor="@color/base_font_txt"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cutout_rocker_bottom" />
+
+        <com.zhangshuo.magicnotice.ui.view.StepSeekBar
+            android:id="@+id/cutout_ssb_raidus"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_weight="1"
+            app:bgColor="@color/base_bg_default"
+            app:layout_constraintBottom_toBottomOf="@+id/cutout_tv_raidus"
+            app:layout_constraintLeft_toRightOf="@+id/cutout_tv_raidus"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cutout_tv_raidus"
+            app:maxProgress="20"
+            app:pointColor="@color/base_font_hint_input"
+            app:progress="0"
+            app:progressColor="@color/base_color_blue"
+            app:radius="10dp"
+            app:thumbColor="@color/base_white" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

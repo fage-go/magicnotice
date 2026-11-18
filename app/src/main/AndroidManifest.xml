@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zhangshuo.magicnotice">
+
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.smartmultiwindow.SMARTMULTIWINDOW_OP" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".MainApp"
+        android:allowBackup="true"
+        android:extractNativeLibs="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MagicNotice">
+
+        <!-- 允许绘制到oppo、vivo刘海屏机型的刘海区域 -->
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.2" /> <!-- 允许绘制到华为刘海屏机型的刘海区域 -->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" /> <!-- 允许绘制到小米刘海屏机型的刘海区域 -->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" />
+        <meta-data
+            android:name="BUGLY_APP_CHANNEL"
+            android:value="mine" />
+
+        <service
+            android:name=".notice.MainNoticeListenerService"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".service.KeepAliveService"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.SplashActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="${magicnoticeUmengScheme}" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.activity.DebugActivity" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.ConfigRuleActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.activity.RuleHitListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.AboutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.h5.H5Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SearchActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.activity.ConfigBarrageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.activity.NotReadListActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
+            android:launchMode="singleInstance"
+            android:resizeableActivity="true" />
+        <activity
+            android:name=".ui.activity.TestConfigActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SelectNoticeActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.TabConfigActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.MakeSchedulerActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.RandomTxtActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ImportTxtActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.RandomTxtGroupActivity"
+            android:screenOrientation="portrait" />
+
+
+        <service
+            android:name=".tts.TTSService"
+            android:priority="1000" />
+
+        <receiver
+            android:name=".config.helper.HeadsetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.bluetooth.headset.profile.action.ACTIVE_DEVICE_CHANGED" />
+                <action android:name="android.bluetooth.headset.profile.action.CONNECTION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".storage.NotificationWidget"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.zhangshuo.magicnotice.widget.UPDATE_ALL" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/notification_appwidget_info" />
+        </receiver>
+        <receiver
+            android:name=".storage.NotificationBoxReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="cicada_notice_click_action" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".scheduler.SchedulerBroadcast"
+            android:exported="true" />
+
+        <receiver
+            android:name=".widget.SwitchConfigWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.zhangshuo.magicnotice.widget.UPDATE_ALL" />
+                <action android:name="com.zhangshuo.magicnotice.widget.CLICK" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/config_switch_widget_info" />
+        </receiver>
+
+        <activity
+            android:name=".widget.ShortcutsActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/ActivityTranslucent" />
+
+        <activity
+            android:name=".ui.activity.CutoutLightActivity"
+            android:launchMode="singleTask" />
+    </application>
+
+</manifest>

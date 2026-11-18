@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/base_bg_bottom_dialog"
+    android:paddingBottom="40dp">
+
+    <TextView
+        android:id="@+id/tv_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="18dp"
+        android:text="@string/float_apply_cancel"
+        android:textColor="@color/base_font_txt"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="18dp"
+        android:text="@string/search_select_confirm"
+        android:textColor="@color/base_font_blue"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <View
+        android:id="@+id/v_line"
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_dialog_line"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_all" />
+
+    <LinearLayout
+        android:id="@+id/ll_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/tv_all">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_name"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginHorizontal="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_config_name"
+                android:textColor="@color/base_font_title"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_search_filter"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:hint="@string/tab_config_name_hint"
+                android:maxLength="5"
+                android:minWidth="120dp"
+                android:paddingHorizontal="10dp"
+                android:singleLine="true"
+                android:textColor="@color/base_font_title"
+                android:textColorHint="@color/base_font_hint_input"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginVertical="5dp"
+            android:background="@color/base_bg_default" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_time"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginHorizontal="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/cl_name">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_config_time"
+                android:textColor="@color/base_font_title"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_time_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_config_select_tip"
+                android:textColor="@color/base_font_hint"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/iv_time_more"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_time_more"
+                android:layout_width="16sp"
+                android:layout_height="16sp"
+                android:background="@mipmap/ic_arrow_right"
+                android:backgroundTint="@color/base_font_txt"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_rule"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginHorizontal="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/cl_time">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_config_rule"
+                android:textColor="@color/base_font_title"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_rule_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_config_select_tip"
+                android:textColor="@color/base_font_hint"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/iv_rule_more"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_rule_more"
+                android:layout_width="16sp"
+                android:layout_height="16sp"
+                android:background="@mipmap/ic_arrow_right"
+                android:backgroundTint="@color/base_font_txt"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <com.zhangshuo.common.view.MaxHeightRecyclerView
+            android:id="@+id/rv_rule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:paddingHorizontal="10dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/cl_rule"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_app"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginHorizontal="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/rv_rule">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_config_app"
+                android:textColor="@color/base_font_title"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_app_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_config_select_tip"
+                android:textColor="@color/base_font_hint"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/iv_app_more"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_app_more"
+                android:layout_width="16sp"
+                android:layout_height="16sp"
+                android:background="@mipmap/ic_arrow_right"
+                android:backgroundTint="@color/base_font_txt"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <com.zhangshuo.common.view.MaxHeightRecyclerView
+            android:id="@+id/rv_app"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:paddingHorizontal="10dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/cl_app"
+            tools:visibility="visible" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_keyword"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginHorizontal="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/cl_name">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_config_strengthen"
+                android:textColor="@color/base_font_title"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_keyword_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_config_keyword_tip"
+                android:textColor="@color/base_font_hint"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/iv_keyword_more"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_keyword_more"
+                android:layout_width="16sp"
+                android:layout_height="16sp"
+                android:background="@mipmap/ic_arrow_right"
+                android:backgroundTint="@color/base_font_txt"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.zhangshuo.common.view.MaxHeightRecyclerView
+            android:id="@+id/rv_keyword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:paddingHorizontal="10dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/cl_keyword"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_delete"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_marginVertical="20dp"
+        android:text="@string/config_rule_delete"
+        android:textSize="16sp"
+        app:backgroundTint="@color/base_color_red"
+        app:cornerRadius="4dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_setting" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

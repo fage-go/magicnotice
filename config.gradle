@@ -1,0 +1,58 @@
+ext {
+    // grade
+    gradle_build = [
+
+    ]
+
+    // maven
+    maven = [
+
+    ]
+
+    // 版本控制
+    android = [
+            compileSdkVersion: 30,
+            minSdkVersion    : 23,
+            targetSdkVersion : 30,
+            buildToolsVersion: '30.0.2',
+            versionCode      : 1680,
+            versionName      : 'Cicada 1.6.8'
+    ]
+
+    // 三方依赖
+    dependencies = [
+            'appcompat'              : 'androidx.appcompat:appcompat:1.2.0',
+            'material'               : 'com.google.android.material:material:1.2.1',
+            "support-v4"             : "androidx.legacy:legacy-support-v4:1.0.0",
+            "annotations"            : "androidx.annotation:annotation:1.1.0",
+            "recyclerview"           : "androidx.recyclerview:recyclerview:1.1.0",
+            "flexbox"                : "com.google.android.flexbox:flexbox:3.0.0",
+            "cardview"               : "androidx.cardview:cardview:1.0.0",
+            "constraint-layout"      : "androidx.constraintlayout:constraintlayout:2.0.4",
+            "multidex"               : "androidx.multidex:multidex:2.0.1",
+            "lifecyle"               : "androidx.lifecycle:lifecycle-extensions:2.2.0",
+            "gson"                   : "com.google.code.gson:gson:2.8.5",
+            "UtilCode"               : "com.blankj:utilcodex:1.31.1",
+            'eventbus'               : "org.greenrobot:eventbus:3.2.0",
+            'Arouter'                : "com.alibaba:arouter-api:1.5.2",
+            'Arouter-Compiler'       : "com.alibaba:arouter-compiler:1.5.2",
+            'immersionbar'           : "com.gyf.immersionbar:immersionbar:3.0.0",
+            'autosize'               : "me.jessyan:autosize:1.2.1",
+            "SmartRefresh"           : "com.scwang.smart:refresh-layout-kernel:2.0.3",
+            "SmartRefresh-Header"    : "com.scwang.smart:refresh-header-classics:2.0.3",
+            "SmartRefresh-Footer"    : "com.scwang.smart:refresh-footer-classics:2.0.3",
+            "Room"                   : "androidx.room:room-runtime:2.4.0-alpha03",
+            "Room-Compiler"          : "androidx.room:room-compiler:2.4.0-alpha03",
+            "Room-RxJava"            : "androidx.room:room-rxjava3:2.4.0-alpha03",
+            "RxJava-Android"         : "io.reactivex.rxjava3:rxandroid:3.0.0",
+            "mmkv"                   : "com.tencent:mmkv:1.2.13",
+            "retrofit"               : "com.squareup.retrofit2:retrofit:2.9.0",
+            "retrofit-log"           : "com.squareup.okhttp3:logging-interceptor:3.11.0",
+            "retrofit-converter-gson": "com.squareup.retrofit2:converter-gson:2.9.0",
+            "retrofit-adapter"       : "com.squareup.retrofit2:adapter-rxjava3:2.9.0",
+            "BasePopup"              : "io.github.razerdp:BasePopup:3.2.0",
+            "Glide"                  : "com.github.bumptech.glide:glide:4.11.0",
+            "Glide-Compiler"         : "com.github.bumptech.glide:compiler:4.11.0"
+
+    ]
+}

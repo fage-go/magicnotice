@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/item_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/bg_item_conditions"
+        android:drawablePadding="4dp"
+        android:text="@string/conditions_common_title"
+        android:textColor="@color/base_font_black"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/item_tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/bg_item_conditions_content"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        android:textColor="@color/base_color_blue"
+        android:textSize="16sp"
+        tools:text="内容内容内容" />
+</LinearLayout>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/base_white"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp"
+        app:flexWrap="wrap"
+        app:justifyContent="space_around">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/calendar_one"
+            android:textColor="@color/base_font_title"
+            android:textSize="13dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/calendar_two"
+            android:textColor="@color/base_font_title"
+            android:textSize="13dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/calendar_three"
+            android:textColor="@color/base_font_title"
+            android:textSize="13dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/calendar_four"
+            android:textColor="@color/base_font_title"
+            android:textSize="13dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/calendar_five"
+            android:textColor="@color/base_font_title"
+            android:textSize="13dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/calendar_six"
+            android:textColor="@color/base_font_blue"
+            android:textSize="13dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/calendar_day"
+            android:textColor="@color/base_font_blue"
+            android:textSize="13dp" />
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.zhangshuo.common.view.MaxHeightRecyclerView
+        android:id="@+id/rv_day"
+        android:paddingHorizontal="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

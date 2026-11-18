@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:cardBackgroundColor="@color/base_white"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="4dp">
+
+        <com.zhangshuo.magicnotice.ui.view.StepSeekBar
+            android:id="@+id/step_seek_bar"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            app:bgColor="@color/base_bg_default"
+            app:maxProgress="5"
+            app:pointColor="@color/base_font_hint_input"
+            app:progress="2"
+            app:progressColor="@color/base_color_blue"
+            app:radius="10dp"
+            app:thumbColor="@color/base_white" />
+
+    </com.google.android.material.card.MaterialCardView>
+</FrameLayout>

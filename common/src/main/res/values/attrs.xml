@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--最大高度RecyclerView-->
+    <declare-styleable name="base_MaxHeightRecyclerView">
+        <attr name="maxRvHeight" format="dimension" tools:ignore="ResourceName" />
+    </declare-styleable>
+
+    <!--最大高度ScrollerView-->
+    <declare-styleable name="base_MaxHeightScrollView">
+        <attr name="maxSvHeight" format="dimension" tools:ignore="ResourceName" />
+    </declare-styleable>
+
+    <declare-styleable name="WTablayout">
+        <attr name="tabSelectTextColor" format="color" />
+        <attr name="tabTextColor" format="color" />
+        <attr name="tabTextSize" format="dimension" />
+        <attr name="tabTextGravity" format="enum">
+            <enum name="center" value="1" />
+            <enum name="left" value="2" />
+            <enum name="right" value="3" />
+            <enum name="bottom" value="4" />
+        </attr>
+        <attr name="tabSelectTextSize" format="dimension" />
+        <attr name="tabPaddingLeft" format="dimension" />
+        <attr name="tabPaddingRight" format="dimension" />
+        <attr name="tabPaddingBottom" format="dimension" />
+        <attr name="tabImageWidth" format="dimension" />
+        <attr name="tabImageHeight" format="dimension" />
+        <attr name="tabSelectBold" format="boolean" />
+        <attr name="tabBold" format="boolean" />
+        <attr name="tabIvStatusRes" format="reference" />
+
+        <attr name="mode" format="enum">
+            <enum name="scroll" value="1" />
+            <enum name="fix" value="2" />
+            <enum name="custom" value="3" />
+        </attr>
+        <attr name="tabSubscriptShowNum" format="boolean" />
+        <attr name="tabSubscriptBackColor" format="color" />
+        <attr name="tabSubscriptSelectBackColor" format="color" />
+        <attr name="tabSubscriptStrokeColor" format="color" />
+        <attr name="tabSubscriptSelectStrokeColor" format="color" />
+        <attr name="tabSubscriptTextColor" format="color" />
+        <attr name="tabSubscriptSelectTextColor" format="color" />
+        <attr name="tabSubscriptFontSizeStyle" format="enum">
+            <enum name="none" value="-1" />
+            <enum name="normal" value="0" />
+            <enum name="price" value="1" />
+        </attr>
+        <attr name="tabArrowRes" format="reference" />
+        <attr name="tabArrowWidth" format="dimension" />
+        <attr name="tabArrowHeight" format="dimension" />
+        <attr name="tabArrowMarginLeft" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="StoreHouseHeader">
+        <attr name="shhText" format="string" />
+        <attr name="shhLineWidth" format="dimension" />
+        <attr name="shhDropHeight" format="dimension" />
+        <attr name="shhEnableFadeAnimation" format="boolean" />
+        <attr name="srlText" format="string" />
+        <attr name="srlLineWidth" format="dimension" />
+        <attr name="srlDropHeight" format="dimension" />
+        <attr name="srlEnableFadeAnimation" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="RecyclerWheelPicker">
+        <attr name="rwp_textSize" format="dimension|reference" />
+        <attr name="rwp_textColor" format="color|reference" />
+        <attr name="rwp_unitSize" format="dimension|reference" />
+        <attr name="rwp_unitColor" format="color|reference" />
+        <attr name="rwp_decorationColor" format="color|reference" />
+        <attr name="rwp_decorationSize" format="dimension|reference" />
+    </declare-styleable>
+
+    <!-- 添加线模式 -->
+    <declare-styleable name="BasePickerView">
+        <attr name="pv_visible_item_count" format="integer" />
+        <!-- item尺寸 -->
+        <attr name="pv_item_size" format="dimension" />
+        <!-- 中间item的位置,默认为0-->
+        <attr name="pv_center_item_position" format="integer" />
+        <!-- 是否循环滚动，默认为true，开启-->
+        <attr name="pv_is_circulation" format="boolean" />
+        <!-- 不允许父组件拦截触摸事件，设置为true为不允许拦截，此时该设置才生效 -->
+        <attr name="pv_disallow_intercept_touch" format="boolean" />
+        <!-- 滚动的方向-->
+        <attr name="pv_orientation" format="string">
+            <enum name="horizontal" value="1" />
+            <enum name="vertical" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="PickerView">
+        <!-- out min text size -->
+        <attr name="pv_out_text_size" format="dimension" />
+        <!-- center max text size -->
+        <attr name="pv_center_text_size" format="dimension" />
+        <!-- out text color -->
+        <attr name="pv_start_color" format="color" />
+        <!-- center text color -->
+        <attr name="pv_end_color" format="color" />
+        <!-- alignment -->
+        <attr name="pv_alignment" format="enum">
+            <enum name="center" value="1" />
+            <enum name="left" value="2" />
+            <enum name="right" value="3" />
+        </attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="ColorPickerPreference">
+        <attr name="alphaSlider" format="boolean"/>
+        <attr name="lightnessSlider" format="boolean"/>
+        <attr name="border" format="boolean"/>
+        <attr name="density" format="integer"/>
+        <attr name="initialColor" format="integer"/>
+        <attr name="wheelType" format="enum">
+            <enum name="FLOWER" value="0"/>
+            <enum name="CIRCLE" value="1"/>
+        </attr>
+        <attr name="lightnessSliderView" format="reference"/>
+        <attr name="alphaSliderView" format="reference"/>
+        <attr name="pickerColorEdit" format="boolean"/>
+        <attr name="pickerColorEditTextColor" format="integer"/>
+        <attr name="pickerTitle" format="reference|string"/>
+        <attr name="pickerButtonOk" format="reference|string"/>
+        <attr name="pickerButtonCancel" format="reference|string"/>
+    </declare-styleable>
+
+    <declare-styleable name="AbsCustomSlider">
+        <attr name="inVerticalOrientation" format="boolean"/>
+    </declare-styleable>
+</resources>

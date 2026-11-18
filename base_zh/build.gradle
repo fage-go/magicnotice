@@ -1,0 +1,46 @@
+apply plugin: 'com.android.library'
+
+// Optional inputs for private builds; never add real values to the repository or CI.
+def ownerSetting = { String name ->
+    (System.getenv(name) ?: '').getBytes('UTF-8').encodeBase64().toString()
+}
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+    viewBinding {
+        enabled = true
+    }
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+        buildConfigField 'String', 'OPTIONAL_UMENG_APP_ID_B64', '"' + ownerSetting('MAGICNOTICE_UMENG_APP_ID') + '"'
+        multiDexEnabled true
+
+        //ndk过滤
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+dependencies {
+    api project(":common")
+    //umeng
+    api 'com.umeng.umsdk:common:9.6.1'// 必选
+    api 'com.umeng.umsdk:asms:1.8.0'// 必选
+    api 'com.umeng.umsdk:apm:1.7.0' // 错误分析模块改为独立库，看crash和性能数据请一定集成
+    api 'com.umeng.umsdk:abtest:1.0.0'
+}

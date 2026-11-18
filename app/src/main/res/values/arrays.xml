@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="first_guide_copy_txt">
+        <item>验证码</item>
+        <item>授权码</item>
+        <item>校验码</item>
+        <item>认证码</item>
+    </string-array>
+</resources>

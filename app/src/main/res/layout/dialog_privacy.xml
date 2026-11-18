@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="275dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/base_bg_common_dialog"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_privacy_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/privacy_dialog_title"
+        android:textColor="@color/base_font_title"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:lineSpacingExtra="5dp"
+            android:text="@string/privacy_text"
+            android:textColor="@color/base_font_title"
+            android:textSize="15sp" />
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <com.zhangshuo.magicnotice.ui.view.AgreementView
+        android:id="@+id/agreement_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:paddingVertical="10dp" />
+
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/base_bg_default" />
+
+    <LinearLayout
+        android:id="@+id/ll_privacy"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_exit"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/privacy_dialog_refuse"
+            android:textColor="@color/base_font_txt_sub"
+            android:textSize="15sp" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="#FFEBEBEB" />
+
+        <TextView
+            android:id="@+id/tv_privacy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/privacy_dialog_agree"
+            android:textColor="@color/main_color"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+</LinearLayout>

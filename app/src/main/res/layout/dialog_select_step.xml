@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/base_bg_bottom_dialog"
+    android:paddingBottom="40dp">
+
+    <View
+        android:id="@+id/v_line"
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_dialog_line"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.zhangshuo.magicnotice.ui.view.StepSeekBar
+        android:id="@+id/barrage_step_font_size"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        app:bgColor="@color/base_bg_default"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/v_line"
+        app:maxProgress="5"
+        app:pointColor="@color/base_font_hint_input"
+        app:progress="2"
+        app:progressColor="@color/base_color_blue"
+        app:radius="10dp"
+        app:thumbColor="@color/base_white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

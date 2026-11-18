@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center">
+
+        <com.zhangshuo.magicnotice.ball.FloatBallView
+            android:id="@+id/float_ball_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="15dp"
+        android:background="@color/base_white" />
+
+
+    <TextView
+        android:id="@+id/tv_font"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp"
+        android:text="@string/float_ball_content"
+        android:textColor="@color/base_font_title"
+        android:textSize="16sp" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/ll_font"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp">
+
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_font_size"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/float_ball_font_size"
+            app:type="value" />
+
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_font_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/float_ball_font_color"
+            app:type="color" />
+
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_font_alpha"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/float_ball_font_alpha"
+            app:type="value" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <TextView
+        android:id="@+id/tv_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp"
+        android:text="@string/float_ball_bg_set"
+        android:textColor="@color/base_font_title"
+        android:textSize="16sp" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/ll_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp">
+
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_bg_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/float_ball_bg_type"
+            app:type="value" />
+
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_bg_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/float_ball_bg_color"
+            app:type="color" />
+
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_bg_alpha"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/float_ball_bg_alpha"
+            app:type="value" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+
+    <TextView
+        android:id="@+id/tv_opt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp"
+        android:text="@string/float_ball_opt_set"
+        android:textColor="@color/base_font_title"
+        android:textSize="16sp" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/ll_opt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:animateLayoutChanges="true">
+
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_opt_single"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/float_ball_single"
+            app:type="value" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+</LinearLayout>

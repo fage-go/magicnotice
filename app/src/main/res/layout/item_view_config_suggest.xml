@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/bg_config_suggest"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="4dp"
+    android:text="aaa"
+    android:textColor="@color/base_font_txt_sub"
+    android:textSize="14sp">
+
+</TextView>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/base_bg_common_dialog"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/mb_expose_rule"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/expose_data_rule"
+        android:textColor="@color/base_white"
+        android:textSize="16sp"
+        app:backgroundTint="@color/base_font_title"
+        app:cornerRadius="4dp"
+        app:rippleColor="@color/base_font_txt" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/mb_expose_all"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/expose_data_rule_data"
+        android:textColor="@color/base_white"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:backgroundTint="@color/base_font_title"
+        app:cornerRadius="4dp"
+        app:rippleColor="@color/base_font_txt" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/mb_expose_notify"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/expose_remind_tips"
+        android:textColor="@color/base_white"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:backgroundTint="@color/base_font_title"
+        app:cornerRadius="4dp"
+        app:rippleColor="@color/base_font_txt" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/mb_input_data"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/import_rule_config"
+        android:textColor="@color/base_font_white"
+        android:textSize="16sp"
+        app:backgroundTint="@color/base_font_hint"
+        app:cornerRadius="4dp"
+        app:rippleColor="@color/base_font_txt" />
+
+</LinearLayout>

@@ -1,0 +1,125 @@
+plugins {
+    id 'com.android.application'
+    id 'com.alibaba.arouter'
+}
+//apply from:'../flavorsConfig.gradle'
+
+// A public checkout can compile without the owner's signing key.
+def releaseSigning = ['MAGICNOTICE_KEYSTORE', 'MAGICNOTICE_STORE_PASSWORD',
+                      'MAGICNOTICE_KEY_ALIAS', 'MAGICNOTICE_KEY_PASSWORD'].collect { System.getenv(it) }
+def hasReleaseSigning = releaseSigning.every { it }
+
+// Optional inputs for private builds; never add real values to the repository or CI.
+def ownerSetting = { String name ->
+    (System.getenv(name) ?: '').getBytes('UTF-8').encodeBase64().toString()
+}
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+
+    viewBinding {
+        enabled = true
+    }
+
+    defaultConfig {
+        applicationId "com.zhangshuo.magicnotice"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+        buildConfigField 'String', 'LEGACY_EXPORT_KEY_B64', '"' + ownerSetting('MAGICNOTICE_LEGACY_EXPORT_KEY') + '"'
+        buildConfigField 'String', 'LEGACY_EXPORT_IV_B64', '"' + ownerSetting('MAGICNOTICE_LEGACY_EXPORT_IV') + '"'
+        def telemetryAppId = System.getenv('MAGICNOTICE_UMENG_APP_ID') ?: ''
+        manifestPlaceholders.magicnoticeUmengScheme = telemetryAppId ==~ /[A-Za-z0-9]+/
+                ? 'um.' + telemetryAppId + '' : 'magicnotice-unconfigured'
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        AROUTER_MODULE_NAME    : project.getName(),
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"
+                ]
+            }
+        }
+        multiDexEnabled true
+        renderscriptTargetApi 18
+        renderscriptSupportModeEnabled true
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
+        resConfigs "zh"
+        flavorDimensions "language"
+    }
+
+    productFlavors {
+        zh {
+            dimension "language"
+            resConfigs "zh"
+        }
+        en {
+            dimension "language"
+            resConfigs "en"
+        }
+    }
+
+    signingConfigs {
+        if (hasReleaseSigning) {
+            release {
+                storeFile rootProject.file(releaseSigning[0])
+                storePassword releaseSigning[1]
+                keyAlias releaseSigning[2]
+                keyPassword releaseSigning[3]
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true//调试
+            minifyEnabled false//混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            debuggable false//调试
+            minifyEnabled true//混淆
+            zipAlignEnabled true//压缩
+            crunchPngs true//png优化
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding true
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            //只有release编译时生效
+            def apkName = "cicada_${variant.productFlavors[0].name}_${buildType.name}_v${defaultConfig.versionCode}"
+            if (buildType.name.toLowerCase().contains("release")) {
+                outputFileName = "../../../apks/" + apkName + ".apk"
+            } else {
+                outputFileName = apkName + ".apk"
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.haibin:calendarview:3.7.1'
+
+    annotationProcessor rootProject.ext.dependencies['Arouter-Compiler']
+    annotationProcessor rootProject.ext.dependencies['Room-Compiler']
+    annotationProcessor rootProject.ext.dependencies['Glide-Compiler']
+
+    enApi project(':base_en')
+    zhApi project(':base_zh')
+
+}

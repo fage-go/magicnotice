@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_save_picture"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingVertical="30dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_show_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="@string/save_picture_title"
+            android:textColor="@color/base_font_title"
+            android:textSize="16sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_show_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="@string/save_picture_mode"
+            android:textColor="#232323"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/switch_mode"
+            app:layout_constraintRight_toLeftOf="@+id/switch_mode"
+            app:layout_constraintTop_toTopOf="@+id/switch_mode" />
+
+        <Switch
+            android:id="@+id/switch_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="15dp"
+            android:thumb="@drawable/switch_ios_thumb"
+            android:track="@drawable/switch_ios_track_selector"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_notice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_save_picture_light"
+        android:padding="10dp">
+
+
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/bg_notification_avatar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.zhangshuo.magicnotice.ui.view.ClickAndCopyTextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:paddingRight="40dp"
+            android:textColor="@color/base_font_title"
+            android:textColorHighlight="#40AEB1BF"
+            android:textIsSelectable="true"
+            android:textSize="15sp"
+            app:layout_constraintLeft_toRightOf="@+id/iv_logo"
+            app:layout_constraintTop_toTopOf="@+id/iv_logo"
+            tools:text="标题" />
+
+
+        <com.zhangshuo.magicnotice.ui.view.ClickAndCopyTextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:lineSpacingExtra="2dp"
+            android:textColor="@color/base_font_txt"
+            android:textColorHighlight="#40AEB1BF"
+            android:textIsSelectable="true"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            tools:text="内容内容" />
+
+
+        <View
+            android:id="@+id/v_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.5"
+            android:background="@color/base_bg_default"
+            app:layout_constraintTop_toBottomOf="@+id/tv_content" />
+
+        <ImageView
+            android:id="@+id/item_iv_app_logo"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            app:layout_constraintBottom_toBottomOf="@+id/item_tv_app_name"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/item_tv_app_name"
+            tools:background="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/item_tv_app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/save_picture_app_name"
+            android:textColor="@color/base_font_txt_sub"
+            android:textSize="12sp"
+            app:layout_constraintLeft_toRightOf="@+id/item_iv_app_logo"
+            app:layout_constraintTop_toBottomOf="@+id/v_line" />
+
+        <TextView
+            android:id="@+id/item_tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10:00"
+            android:textColor="@color/base_font_txt_sub"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/item_tv_app_name"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/item_tv_app_name" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="20dp">
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mb_save"
+            android:layout_width="160dp"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="40dp"
+            android:text="@string/config_rule_save"
+            android:textColor="@color/base_white"
+            android:textSize="14sp"
+            app:backgroundTint="@color/base_font_title"
+            app:cornerRadius="4dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rippleColor="@color/base_font_txt" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

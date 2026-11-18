@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="main_color">#2E333B</color>
+    <color name="teal_color">#2E333B</color>
+    <color name="base_black">#FF000000</color>
+    <color name="base_white">#FFFFFF</color>
+    <color name="base_transparent">#00000000</color>
+
+    <!--背景颜色(页面背景统一用bg_default)-->
+    <color name="base_bg_default">#EAEBED</color>
+    <color name="base_bg_tips">#FEFEFE</color>
+    <color name="base_bg_splash">#FFFFFF</color>
+    <!--辅助颜色-->
+    <color name="base_divider">#EAEBED</color>
+    <color name="base_font_title">#2E333B</color>
+    <!--文字颜色-->
+    <color name="base_font_black">#000000</color>
+    <color name="base_font_white">#FFFFFF</color>
+    <color name="base_font_red">#E54D42</color>
+    <color name="base_font_blue">#0081ff</color>
+    <color name="base_font_golden">#BE872E</color>
+    <color name="base_font_txt">#60646B</color>
+    <color name="base_font_txt_sub">#919499</color>
+    <color name="base_font_hint">#aeb1bf</color>
+    <color name="base_font_hint_input">#CBCDD3</color>
+
+    <color name="base_dialog_press">#E6E6E6</color>
+
+    <color name="base_color_red">#E54D42</color>
+    <color name="base_color_orange">#F37B1D</color>
+    <color name="base_color_yellow">#FBBD08</color>
+    <color name="base_color_olive">#8DC63F</color>
+    <color name="base_color_green">#39B54A</color>
+    <color name="base_color_cyan">#1CBBB4</color>
+    <color name="base_color_blue">#0081FF</color>
+    <color name="base_color_purple">#6739B6</color>
+    <color name="base_color_pink">#E03997</color>
+    <color name="base_color_gray">#F0F0F0</color>
+    <color name="base_color_grey">#8799A3</color>
+
+</resources>

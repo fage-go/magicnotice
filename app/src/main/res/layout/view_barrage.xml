@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/barrage_root"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/barrage_cl_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="#EFEFEF">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/barrage_cl_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/barrage_iv_logo"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.zhangshuo.magicnotice.barrage.BarrageTextView
+                android:id="@+id/barrage_tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fadeScrollbars="false"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textColor="@color/base_font_txt"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="弹幕效果" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <ImageView
+            android:id="@+id/barrage_iv_logo"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="#CFCFCF" />
+
+
+        <TextView
+            android:id="@+id/barrage_tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/base_font_txt_sub"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/barrage_cl_txt"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/barrage_iv_tag"
+        android:layout_width="20dp"
+        android:layout_height="16dp"
+        android:layout_marginLeft="9dp"
+        android:background="@mipmap/icon_gq_cd"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

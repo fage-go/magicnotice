@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TabLayoutTextSelected">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/base_font_blue</item>
+    </style>
+
+    <style name="TabLayoutTextUnSelected">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/base_font_txt</item>
+    </style>
+
+    <style name="TabLayoutTextNormal">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/base_font_txt</item>
+    </style>
+
+    <style name="TabLayoutTextNormalSelect">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/base_font_blue</item>
+    </style>
+
+
+    <style name="FingerPrint_DialogStyle" parent="base_CommonDialogStyle">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@anim/base_dialog_exit</item>
+    </style>
+
+
+</resources>

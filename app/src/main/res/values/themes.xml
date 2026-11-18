@@ -1,0 +1,32 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.MagicNotice" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/white</item>
+        <item name="bottomSheetDialogTheme">@style/base_DialogBottomSheetAnim</item>
+    </style>
+
+
+    <style name="CheckBoxTheme" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/base_color_blue</item>
+        <item name="colorControlNormal">@color/base_font_txt_sub</item>
+    </style>
+
+    <style name="Theme.MagicNotice.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
+        <!-- Radius of the outer bound of widgets to make the rounded corners -->
+        <item name="appWidgetRadius">16dp</item>
+        <!--
+        Radius of the inner view's bound of widgets to make the rounded corners.
+        It needs to be 8dp or less than the value of appWidgetRadius
+        -->
+        <item name="appWidgetInnerRadius">8dp</item>
+    </style>
+
+    <style name="Theme.MagicNotice.AppWidgetContainer" parent="Theme.MagicNotice.AppWidgetContainerParent">
+        <!-- Apply padding to avoid the content of the widget colliding with the rounded corners -->
+        <item name="appWidgetPadding">16dp</item>
+    </style>
+</resources>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_normal_light"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingVertical="10dp">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="15dp">
+
+        <TextView
+            android:id="@+id/tv_config_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/light_behavior_no_cutout_tip"
+            android:textColor="@color/base_font_txt"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_config_set"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_config_set" />
+
+        <TextView
+            android:id="@+id/tv_config_set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/light_behavior_no_cutout_set"
+            android:textColor="@color/base_font_blue"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <com.zhangshuo.magicnotice.led.LightView
+        android:id="@+id/light_view"
+        android:layout_width="90dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp" />
+
+
+    <TextView
+        android:id="@+id/tv_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:paddingVertical="10dp"
+        android:text="@string/light_behavior_style_title"
+        android:textColor="@color/base_font_title"
+        android:textSize="16sp" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flex_ll_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- 类型-->
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_style_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/light_behavior_type"
+            app:type="value" />
+
+        <!-- 动画-->
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_style_anim"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/light_behavior_anim"
+            app:type="value" />
+
+        <!-- 颜色-->
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_style_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/light_behavior_color"
+            app:type="color" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flex_ll_effect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_effect_speed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/light_behavior_speed"
+            app:type="value" />
+
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_effect_stroke"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/light_behavior_stroke"
+            app:type="value" />
+
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/cr_effect_color"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_flexGrow="1"
+            app:title="@string/light_behavior_shadow"
+            app:type="color" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+    <!--显示次数-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/base_white"
+        android:orientation="horizontal"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/rv_shock">
+
+        <TextView
+            android:id="@+id/tv_light_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scheduler_repeat_way"
+            android:textColor="@color/base_font_title"
+            android:textSize="16sp" />
+
+        <com.zhangshuo.magicnotice.ui.view.StepSeekBar
+            android:id="@+id/step_seek_count"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            app:bgColor="@color/base_bg_default"
+            app:maxProgress="5"
+            app:pointColor="@color/base_font_hint_input"
+            app:progress="2"
+            app:progressColor="@color/base_color_blue"
+            app:radius="10dp"
+            app:thumbColor="@color/base_white" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

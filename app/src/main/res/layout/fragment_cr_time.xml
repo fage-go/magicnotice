@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/base_white"
+    android:paddingHorizontal="15dp"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <com.zhangshuo.magicnotice.ui.view.FilterConfigView
+        android:id="@+id/filter_config"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_start_time"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_ui_start_tip"
+                android:textColor="@color/base_font_title"
+                android:textSize="16sp" />
+
+            <FrameLayout
+                android:id="@+id/fl_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:background="@color/base_bg_default" />
+
+        <LinearLayout
+            android:id="@+id/ll_end_time"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_ui_end_tip"
+                android:textColor="@color/base_font_title"
+                android:textSize="16sp" />
+
+            <FrameLayout
+                android:id="@+id/fl_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

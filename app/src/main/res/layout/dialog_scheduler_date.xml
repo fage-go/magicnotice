@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@drawable/bg_content_round"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/float_apply_cancel"
+        android:textColor="@color/base_font_txt"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/search_select_confirm"
+        android:textColor="@color/base_font_blue"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <View
+        android:id="@+id/v_line"
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_dialog_line"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_confirm" />
+
+    <LinearLayout
+        android:id="@+id/ll_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/v_line">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_time"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@color/base_white"
+            app:tabIndicator="@drawable/tab_indicator"
+            app:tabIndicatorColor="#AAFFFFFF"
+            app:tabIndicatorGravity="center"
+            app:tabIndicatorHeight="32dp"
+            app:tabMode="scrollable"
+            app:tabRippleColor="@color/base_bg_default"
+            app:tabSelectedTextColor="@color/base_font_title"
+            app:tabTextAppearance="@style/TabLayoutTextNormal"
+            app:tabTextColor="@color/base_font_txt_sub" />
+
+        <FrameLayout
+            android:id="@+id/fl_content"
+            android:layout_width="match_parent"
+            android:layout_height="220dp" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="StepSeekbar">
+        <attr name="maxProgress" format="integer" />
+        <attr name="progress" format="integer" />
+        <attr name="radius" format="dimension" />
+        <attr name="bgColor" format="color" />
+        <attr name="pointColor" format="color" />
+        <attr name="progressColor" format="color" />
+        <attr name="disableColor" format="color" />
+        <attr name="enable" format="boolean" />
+        <attr name="thumbColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="ConfigRuleTipView">
+        <attr name="title" format="string" />
+        <attr name="titleColor" format="color" />
+        <attr name="titleSize" format="dimension" />
+        <attr name="valueColor" format="color" />
+        <attr name="valueSize" format="dimension" />
+        <attr name="type" format="enum">
+            <enum name="color" value="0" />
+            <enum name="value" value="1" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="AppWidgetAttrs">
+        <attr name="appWidgetPadding" format="dimension" />
+        <attr name="appWidgetInnerRadius" format="dimension" />
+        <attr name="appWidgetRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="GradualColorView">
+        <attr name="startColor" format="color" />
+        <attr name="endColor" format="color" />
+        <attr name="corner" format="dimension" />
+        <attr name="colorType" format="enum">
+            <enum name="normal" value="0" />
+            <enum name="colorful" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,49 @@
+//https://juejin.cn/post/6948613840858775588
+android {
+    flavorDimensions "versionCode"
+    productFlavors {
+        mine {
+        }
+        kuan {
+        }
+        huawei {
+        }
+        yyb {
+        }
+        xiaomi {
+        }
+        vivo {
+        }
+        oppo {
+        }
+
+        productFlavors.all {
+            flavor -> flavor.manifestPlaceholders.put("UMENG_CHANNEL_VALUE", name)
+        }
+    }
+    applicationVariants.all { variant ->
+        // 打包完成后输出路径
+        def name = ((project.name != "app") ? project.name : rootProject.name.replace(" ", "")) +
+                "_" + variant.flavorName +
+                "_" + variant.buildType.name +
+                "_" + variant.versionName +
+                "_" + new Date().format('yyyyMMddhhmm') + ".apk"
+        //相对路径app/build/outputs/apk/huawei/release/
+        def path = "../../../../../apk/" //相当于路径 app/apk/
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                //指定路径输出
+                output.outputFileName = new File(path, name)
+            }
+        }
+        // 在打包完成后还可以做一些别的操作，可以复制到指定目录，或者移动文件到指定目录
+        variant.assemble.doLast {
+            variant.outputs.forEach { file ->
+                //把文件移动到指定文件夹
+                ant.move file: file.outputFile,
+                        todir: "${project.rootDir}/apk"
+            }
+        }
+    }
+}

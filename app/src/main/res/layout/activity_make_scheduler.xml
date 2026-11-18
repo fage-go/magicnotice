@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:animateLayoutChanges="true"
+        app:layout_constraintBottom_toTopOf="@+id/mb_next"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--头部切换-->
+
+            <com.zhangshuo.magicnotice.ui.view.MTabLayoutView
+                android:id="@+id/tab_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" />
+
+
+            <!--文案设置-->
+            <FrameLayout
+                android:id="@+id/fl_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:background="@drawable/bg_content_round">
+
+            </FrameLayout>
+
+
+            <!--开始时间设置-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/fl_start_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="20dp">
+
+                <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+                    android:id="@+id/cr_start_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    app:layout_flexGrow="1"
+                    app:title="@string/scheduler_time_start"
+                    app:titleColor="@color/base_font_title"
+                    app:titleSize="16dp"
+                    app:type="value"
+                    app:valueSize="14dp" />
+
+                <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+                    android:id="@+id/cr_end_time"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    app:layout_flexGrow="1"
+                    app:title="@string/scheduler_time_end"
+                    app:titleColor="@color/base_font_title"
+                    app:titleSize="16dp"
+                    app:type="value"
+                    app:valueSize="14dp" />
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_content_round"
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="5dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="10dp"
+                    android:text="@string/scheduler_remind_count"
+                    android:textColor="@color/base_font_title"
+                    android:textSize="16dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_count_reduce"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@mipmap/ic_reduce_count"
+                    android:backgroundTint="@color/base_font_txt_sub"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/edt_count"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/edt_count"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:background="@color/base_white"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:maxLines="1"
+                    android:text="1"
+                    android:textColor="@color/base_font_title"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/iv_count_add"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_count_add"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginRight="12dp"
+                    android:background="@mipmap/ic_add_count"
+                    android:backgroundTint="@color/base_font_txt_sub"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!--重复方式-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_content_round"
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="5dp">
+
+                <TextView
+                    android:id="@+id/tv_repeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="10dp"
+                    android:text="@string/scheduler_repeat_way"
+                    android:textColor="@color/base_font_title"
+                    android:textSize="16dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_repeat"
+                    android:layout_width="200dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_repeat"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_repeat" />
+
+                <com.zhangshuo.magicnotice.ui.view.remind.RemindRepeatView
+                    android:id="@+id/rrv_repeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_repeat" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:paddingVertical="20dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@drawable/svg_home_time"
+                    android:backgroundTint="@color/base_font_txt_sub" />
+
+                <TextView
+                    android:id="@+id/tv_time_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/scheduler_no_timetip"
+                    android:textColor="@color/base_font_txt_sub"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_mock_app"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="@string/make_scheduler_custom_app"
+                android:textColor="@color/base_font_blue"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!--删除-->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/config_rule_delete"
+        android:textSize="16sp"
+        app:backgroundTint="@color/base_color_red"
+        app:cornerRadius="4dp"
+        app:icon="@mipmap/ic_config_delete"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/mb_next"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/config_rule_save"
+        android:textColor="@color/base_white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/base_font_title"
+        app:cornerRadius="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/btn_delete"
+        app:layout_constraintRight_toRightOf="parent"
+        app:rippleColor="@color/base_font_txt" />
+</androidx.constraintlayout.widget.ConstraintLayout>

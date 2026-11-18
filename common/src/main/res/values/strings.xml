@@ -1,0 +1,36 @@
+<resources>
+    <string name="update_loading_msg">Check Version</string>
+    <string name="update_is_new">Currently the latest version</string>
+    <string name="update_opt_cancel">NO</string>
+    <string name="update_opt_download">UPDATE</string>
+    <string name="update_error">Version check failed, please go to the app store</string>
+    <string name="float_apply_tip">You need to allow the permission in the application settings to use the app normally～</string>
+    <string name="float_apply_cancel">CANCEL</string>
+    <string name="float_apply_go_set">SET</string>
+    <string name="dialog_cancel">CANCEL</string>
+    <string name="dialog_title">Tips</string>
+    <string name="dialog_confirm">CONFIRM</string>
+    <string name="dialog_confirm_yes">CONFIRM</string>
+    <string name="dialog_common_not_tip">Not Tip</string>
+    <string name="dialog_common_input_hint">Input Content</string>
+    <string name="dialog_loading">Loading</string>
+    <string name="view_title_name">Title</string>
+    <string name="view_title_save">SAVE</string>
+    <string name="dialog_select_date">Date</string>
+    <string name="calendar_one">One</string>
+    <string name="calendar_two">Two</string>
+    <string name="calendar_three">Three</string>
+    <string name="calendar_four">Four</string>
+    <string name="calendar_five">Five</string>
+    <string name="calendar_six">Six</string>
+    <string name="calendar_day">Days</string>
+    <string name="app_sys_error">System abnormality, please reopen</string>
+    <string name="time_picker_year">%02d Y</string>
+    <string name="time_picker_month">%02d M</string>
+    <string name="time_picker_day">%02d D</string>
+    <string name="time_picker_day_m">AM</string>
+    <string name="time_picker_day_af">PM</string>
+    <string name="time_picker_hour_all">12 H</string>
+    <string name="time_picker_hour">%2d H</string>
+    <string name="time_picker_minuter">%2d M</string>
+</resources>

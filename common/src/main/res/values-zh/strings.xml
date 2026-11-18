@@ -1,0 +1,36 @@
+<resources>
+    <string name="update_loading_msg">检查版本信息</string>
+    <string name="update_is_new">当前已是最新版本</string>
+    <string name="update_opt_cancel">暂不更新</string>
+    <string name="update_opt_download">下载更新</string>
+    <string name="update_error">版本检查失败，请前往应用市场</string>
+    <string name="float_apply_tip">需要在应用设置中开启悬浮窗权限,才能正常使用相应功能哦～</string>
+    <string name="float_apply_cancel">取消</string>
+    <string name="float_apply_go_set">前往开启</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_title">温馨提示</string>
+    <string name="dialog_confirm">确认</string>
+    <string name="dialog_confirm_yes">确定</string>
+    <string name="dialog_common_not_tip">不再提示</string>
+    <string name="dialog_common_input_hint">请输入内容</string>
+    <string name="dialog_loading">请稍后</string>
+    <string name="view_title_name">标题</string>
+    <string name="view_title_save">保存</string>
+    <string name="dialog_select_date">选择日期</string>
+    <string name="calendar_one">一</string>
+    <string name="calendar_two">二</string>
+    <string name="calendar_three">三</string>
+    <string name="calendar_four">四</string>
+    <string name="calendar_five">五</string>
+    <string name="calendar_six">六</string>
+    <string name="calendar_day">日</string>
+    <string name="app_sys_error">系统异常，请重新打开APP</string>
+    <string name="time_picker_year">年</string>
+    <string name="time_picker_month">%02d月</string>
+    <string name="time_picker_day">%02d日</string>
+    <string name="time_picker_day_m">上午</string>
+    <string name="time_picker_day_af">下午</string>
+    <string name="time_picker_hour_all">12时</string>
+    <string name="time_picker_hour">%2d时</string>
+    <string name="time_picker_minuter">%2d分</string>
+</resources>

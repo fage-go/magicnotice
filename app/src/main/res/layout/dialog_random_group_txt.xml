@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/base_bg_bottom_dialog"
+    android:paddingBottom="15dp">
+
+    <View
+        android:id="@+id/v_line"
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_dialog_line"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_title_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/random_group_txt_add"
+        android:textColor="@color/base_font_title"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tv_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/opt_tip_delete"
+        android:textColor="@color/base_color_red"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <EditText
+        android:id="@+id/et_title"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/bg_edt_round"
+        android:gravity="center_vertical|left"
+        android:hint="@string/random_group_name_hint"
+        android:maxLength="20"
+        android:maxLines="1"
+        android:paddingHorizontal="10dp"
+        android:textColor="@color/base_font_title"
+        android:textColorHint="@color/base_font_hint_input"
+        android:textSize="14dp"
+        app:layout_constraintTop_toBottomOf="@+id/v_line" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/mb_next"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/random_txt_save"
+        android:textColor="@color/base_white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/base_font_title"
+        app:cornerRadius="4dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_title"
+        app:rippleColor="@color/base_font_txt" />
+</androidx.constraintlayout.widget.ConstraintLayout>

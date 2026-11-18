@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--进入动画 移动、展开、闪现、跳动-->
+    <style name="BarrageStyle_Move">
+        <item name="android:windowEnterAnimation">@anim/barrage_window_enter_move</item>
+        <item name="android:windowExitAnimation">@anim/barrage_window_exit</item>
+    </style>
+    <style name="BarrageStyle_Slide">
+        <item name="android:windowEnterAnimation">@anim/barrage_window_enter_slide</item>
+        <item name="android:windowExitAnimation">@anim/barrage_window_exit</item>
+    </style>
+    <style name="BarrageStyle_Alpha">
+        <item name="android:windowEnterAnimation">@anim/barrage_window_enter_alpha</item>
+        <item name="android:windowExitAnimation">@anim/barrage_window_exit</item>
+    </style>
+    <style name="BarrageStyle_Jump">
+        <item name="android:windowEnterAnimation">@anim/barrage_window_enter_jump</item>
+        <item name="android:windowExitAnimation">@anim/barrage_window_exit</item>
+    </style>
+    <!--退出动画 移出、收起、淡出、缩放 这类动画在代码中配置-->
+</resources>
