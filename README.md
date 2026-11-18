@@ -16,8 +16,6 @@ bash ./gradlew :app:assembleZhRelease :app:assembleEnRelease
 
 ## 许可
 
-本项目当前没有仓库级通用许可证（No License）；公开可见不等于授予通用的使用、修改或分发许可。
-
-[PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0) 是一份非商业使用的源码许可。在它适用的项目中，可按条款为非商业目的使用、修改和分发；此处仅作说明，不表示本仓库采用该许可或授予上述权利。
+本仓库使用[PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0) 。这是一份非商业使用的源码许可。在它适用的项目中，可按条款为非商业目的使用、修改和分发；
 
 第三方组件保留各自适用的许可和署名，见 [第三方声明](https://github.com/fage-go/magicnotice/blob/main/THIRD_PARTY_NOTICES.md)。
