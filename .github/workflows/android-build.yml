@@ -108,7 +108,7 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-  publish-unsigned-release:
+  sign-release-apks:
     needs: unsigned-release-apks
     if: >-
       needs.unsigned-release-apks.result == 'success' &&
@@ -117,23 +117,170 @@ jobs:
       github.ref == 'refs/heads/main' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    environment: android-release
+    outputs:
+      published_artifacts_ready: ${{ steps.sign.outputs.ready }}
+    steps:
+      - name: Check signing configuration
+        id: config
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_SIGNING_CERT_SHA256: ${{ vars.ANDROID_SIGNING_CERT_SHA256 }}
+        run: |
+          set +x
+          configured=0
+          for key in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD ANDROID_SIGNING_CERT_SHA256; do
+            if [[ -n "${!key-}" ]]; then
+              configured=$((configured + 1))
+            fi
+          done
+          if [[ "$configured" == 0 ]]; then
+            echo "::notice::Unsigned build artifacts are available. Configure the android-release environment to publish signed APKs."
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ "$configured" != 5 ]]; then
+            echo "::error::Incomplete android-release signing configuration. Set all four signing secrets and the expected certificate fingerprint."
+            exit 1
+          fi
+          expected=$(printf '%s' "$ANDROID_SIGNING_CERT_SHA256" | tr -d '[:space:]:' | tr '[:upper:]' '[:lower:]')
+          if [[ ! "$expected" =~ ^[a-f0-9]{64}$ ]]; then
+            echo "::error::The expected signing certificate SHA-256 fingerprint is invalid."
+            exit 1
+          fi
+          echo 'ready=true' >> "$GITHUB_OUTPUT"
+
+      - name: Install Android signing tools
+        if: steps.config.outputs.ready == 'true'
+        shell: bash
+        run: |
+          export JAVA_HOME="$JAVA_HOME_17_X64"
+          export PATH="$JAVA_HOME/bin:$PATH"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "build-tools;30.0.3"
+
+      - name: Download validated Chinese unsigned APK
+        if: steps.config.outputs.ready == 'true'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: MagicNotice-zh-release-unsigned
+          path: unsigned-apks/zh
+
+      - name: Download validated English unsigned APK
+        if: steps.config.outputs.ready == 'true'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: MagicNotice-en-release-unsigned
+          path: unsigned-apks/en
+
+      - name: Sign and verify both APKs
+        if: steps.config.outputs.ready == 'true'
+        id: sign
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_SIGNING_CERT_SHA256: ${{ vars.ANDROID_SIGNING_CERT_SHA256 }}
+        run: |
+          set +x
+          set -euo pipefail
+          umask 077
+          shopt -s nullglob dotglob
+          expected=$(printf '%s' "$ANDROID_SIGNING_CERT_SHA256" | tr -d '[:space:]:' | tr '[:upper:]' '[:lower:]')
+          [[ "$expected" =~ ^[a-f0-9]{64}$ ]]
+          work=$(mktemp -d "$RUNNER_TEMP/magicnotice-sign.XXXXXXXX")
+          trap 'rm -rf -- "$work"' EXIT
+          if ! printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$work/release.keystore" 2>"$work/signer.log" || [[ ! -s "$work/release.keystore" ]]; then
+            echo "::error::The configured Android keystore could not be decoded."
+            exit 1
+          fi
+          unset ANDROID_KEYSTORE_BASE64
+
+          tools="$ANDROID_HOME/build-tools/30.0.3"
+          for locale in zh en; do
+            files=("unsigned-apks/$locale/"*)
+            [[ ${#files[@]} == 1 && -f "${files[0]}" && ! -L "${files[0]}" && -s "${files[0]}" ]]
+            name="${files[0]##*/}"
+            [[ "$name" =~ ^cicada_${locale}_release_v[0-9]+-unsigned\.apk$ ]]
+            output="${name%-unsigned.apk}-signed.apk"
+            "$tools/zipalign" -p -f 4 "${files[0]}" "$work/$locale-aligned.apk"
+            if ! "$tools/apksigner" sign --ks "$work/release.keystore" \
+                --ks-key-alias "$ANDROID_KEY_ALIAS" \
+                --ks-pass env:ANDROID_KEYSTORE_PASSWORD --key-pass env:ANDROID_KEY_PASSWORD \
+                --v4-signing-enabled false --out "$work/$output" "$work/$locale-aligned.apk" >"$work/signer.log" 2>&1; then
+              echo "::error::Android signing failed. Verify the keystore, alias and passwords in android-release."
+              exit 1
+            fi
+            "$tools/zipalign" -c -p 4 "$work/$output"
+            if ! "$tools/apksigner" verify --verbose --print-certs "$work/$output" >"$work/verify.log" 2>&1; then
+              echo "::error::APK signing verification failed."
+              exit 1
+            fi
+            signers=$(awk -F ': ' '/^Number of signers: / {print $2}' "$work/verify.log")
+            cert=$(awk -F ': ' '/^Signer #[0-9]+ certificate SHA-256 digest: / {print tolower($2)}' "$work/verify.log")
+            if [[ "$signers" != 1 || "$cert" != "$expected" ]]; then
+              echo "::error::APK does not have exactly one signer with the expected official certificate."
+              exit 1
+            fi
+          done
+          for locale in zh en; do
+            mkdir -p "signed-apks/$locale"
+            cp -- "$work/"cicada_"$locale"_release_v*-signed.apk "signed-apks/$locale/"
+          done
+          echo 'ready=true' >> "$GITHUB_OUTPUT"
+
+      - name: Upload verified Chinese signed APK
+        if: steps.sign.outputs.ready == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: MagicNotice-zh-release-signed
+          path: signed-apks/zh/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload verified English signed APK
+        if: steps.sign.outputs.ready == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: MagicNotice-en-release-signed
+          path: signed-apks/en/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
+  publish-signed-release:
+    needs: sign-release-apks
+    if: >-
+      needs.sign-release-apks.result == 'success' &&
+      needs.sign-release-apks.outputs.published_artifacts_ready == 'true' &&
+      github.repository == 'fage-go/magicnotice' &&
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
       contents: write
     concurrency:
-      group: magicnotice-unsigned-release-${{ github.sha }}
+      group: magicnotice-signed-release-${{ github.sha }}
       cancel-in-progress: false
     steps:
-      - name: Download validated Chinese APK
+      - name: Download verified signed Chinese APK
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          name: MagicNotice-zh-release-unsigned
+          name: MagicNotice-zh-release-signed
           path: release-apks/zh
 
-      - name: Download validated English APK
+      - name: Download verified signed English APK
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          name: MagicNotice-en-release-unsigned
+          name: MagicNotice-en-release-signed
           path: release-apks/en
 
       - name: Publish the two APKs as a pre-release
@@ -149,14 +296,14 @@ jobs:
             files=("release-apks/$locale/"*)
             [[ ${#files[@]} == 1 && -f "${files[0]}" && ! -L "${files[0]}" && -s "${files[0]}" ]]
             name="${files[0]##*/}"
-            [[ "$name" =~ ^cicada_${locale}_release_v[0-9]+-unsigned\.apk$ ]]
+            [[ "$name" =~ ^cicada_${locale}_release_v[0-9]+-signed\.apk$ ]]
             paths+=("${files[0]}")
             names+=("$name")
           done
 
           repo=fage-go/magicnotice
-          tag="unsigned-${GITHUB_SHA:0:12}"
-          notes='包含中文和英文版未签名 Release APK，安装前请自行签名。 These Release APKs are unsigned and must be signed before installation.'
+          tag="signed-${GITHUB_SHA:0:12}"
+          notes='包含中文和英文版 Release APK，均已使用官方签名并核验签名证书。 Both APKs were signed and verified against the official certificate.'
 
           target=$(gh api "repos/$repo/git/matching-refs/tags/$tag" | jq -c --arg ref "refs/tags/$tag" '[.[] | select(.ref == $ref)]')
           jq -e --arg sha "$GITHUB_SHA" 'length == 0 or (length == 1 and .[0].object.type == "commit" and .[0].object.sha == $sha)' <<<"$target" >/dev/null
