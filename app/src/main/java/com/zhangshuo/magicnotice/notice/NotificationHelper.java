@@ -289,6 +289,10 @@ public class NotificationHelper {
         this.noticeListenerService = service;
     }
 
+    public void unBindListenerService(MainNoticeListenerService service) {
+        if (noticeListenerService == service) unBindListenerService();
+    }
+
     public void unBindListenerService() {
         this.noticeListenerService = null;
     }

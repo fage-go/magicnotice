@@ -2,6 +2,7 @@ package com.zhangshuo.magicnotice.barrage;
 
 import com.zhangshuo.common.AppUtil;
 import com.zhangshuo.common.util.StringUtil;
+import com.zhangshuo.common.util.LogUtils;
 import com.zhangshuo.magicnotice.R;
 import com.zhangshuo.magicnotice.db.model.NotificationData;
 import com.zhangshuo.magicnotice.ui.model.BehaviorModel;
@@ -13,8 +14,14 @@ public class BehaviorHelper {
 
     public static final int TEST_NOTIFICATION_ID = -8888;
     public static void exec(NotificationData notificationData, List<BehaviorModel> behaviorList) {
-        if (behaviorList != null && behaviorList.size() > 0) {
-            startExec(notificationData, behaviorList, 0);
+        if (behaviorList == null) return;
+        for (BehaviorModel behavior : behaviorList) {
+            if (behavior == null) continue;
+            try {
+                behavior.exec(notificationData);
+            } catch (RuntimeException e) {
+                LogUtils.w("delivery phase=action_failed error=" + e.getClass().getSimpleName());
+            }
         }
     }
 
@@ -23,15 +30,6 @@ public class BehaviorHelper {
         NotificationData testNotificationData = getTestNotificationData();
         exec(testNotificationData, configRuleModel.getBehaviorList());
     }
-
-    private static void startExec(NotificationData notificationData, List<BehaviorModel> behaviorModelList, int index) {
-        if (index >= behaviorModelList.size()) return;
-        BehaviorModel behaviorModel = behaviorModelList.get(index);
-        behaviorModel.exec(notificationData);
-        index++;
-        startExec(notificationData, behaviorModelList, index);
-    }
-
 
     public static NotificationData getTestNotificationData() {
         NotificationData notificationData = new NotificationData();

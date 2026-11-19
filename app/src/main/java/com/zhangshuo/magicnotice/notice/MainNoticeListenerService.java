@@ -3,9 +3,11 @@ package com.zhangshuo.magicnotice.notice;
 import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
@@ -16,15 +18,20 @@ import com.zhangshuo.magicnotice.R;
 import com.zhangshuo.magicnotice.config.AppStatusConfig;
 import com.zhangshuo.magicnotice.notice.factory.ProcessFactory;
 
-import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * 通知监听器
  */
 public class MainNoticeListenerService extends NotificationListenerService {
-    private List<String> needCleanNoticeList = new ArrayList<>();
-    private String zenModePolicyKey = "";
+    private final OriginalDismissals originals = new OriginalDismissals();
+    private final Handler main = new Handler(Looper.getMainLooper());
+    private static final int DISMISS_BATCH_SIZE = 4;
+    private final Runnable drainCommitted = this::dismissCommittedBatch;
+    private boolean dismissalScheduled;
+    private boolean connected;
+    private volatile String zenModePolicyKey = "";
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -37,7 +44,14 @@ public class MainNoticeListenerService extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
-        LogUtils.i("onNotificationPosted " + sbn.getKey());
+        if (sbn == null) return;
+        final long received = SystemClock.elapsedRealtime();
+        final long sourceAge = System.currentTimeMillis() - sbn.getPostTime();
+        onMain(() -> handlePosted(sbn, received, sourceAge));
+    }
+
+    private void handlePosted(StatusBarNotification sbn, long received, long sourceAge) {
+        final OriginalDismissals.Delivery delivery = originals.begin(sbn.getKey(), sbn.getPostTime());
         //如果是自己应用
         if (sbn.getPackageName().equals(getPackageName())) {
             String channelId = "";
@@ -45,63 +59,95 @@ public class MainNoticeListenerService extends NotificationListenerService {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 channelId = sbn.getNotification().getChannelId();
             }
-            LogUtils.i("Ignore MagicNotice " + sbn.getGroupKey() + " >> " + sbn.getKey() + ">C>" + channelId + ">>" + notificationId);
             boolean isRemindNotification = false;
             if ((!TextUtils.isEmpty(channelId) && "CicadaScheduler_Channel".equals(channelId))
                     || (TextUtils.isEmpty(channelId) && notificationId > 10000 && notificationId < 20000)) {
                 isRemindNotification = true;
             }
             //如果不是提醒类型的通知，则返回，不拦截
-            if (!isRemindNotification)
+            if (!isRemindNotification) {
+                originals.finish(delivery);
                 return;
+            }
         }
         //判断是不是常驻通知
         if (sbn.isClearable() && !sbn.isOngoing()) {
-            //开始处理数据
-            boolean needFilter = ProcessFactory.get().onProcess(this, sbn);
-            if (needFilter) {
-                if (AppStatusConfig.get().isScreenUnPresent()) {
-                    cancelNotification(sbn.getKey());
+            LogUtils.i("delivery phase=received source_age_ms=" + sourceAge);
+            ProcessFactory.get().onProcess(this, sbn, received, dismissal -> {
+                if (dismissal != null && originals.commit(delivery, dismissal::allowed)) {
+                    scheduleDismissals(0);
                 } else {
-                    needCleanNoticeList.add(sbn.getKey());
+                    originals.finish(delivery);
                 }
-            }
-            LogUtils.i("onNotificationPosted needFilter:" + needFilter);
+            });
         } else {
-            //如果不可以被清理，但是可以强制清除的，除去onGoing的
-            String notificationPKGName = sbn.getPackageName();
-            if (maybeZenModePolicy(sbn)) {
-                //可能是免打扰
-                zenModePolicyKey = sbn.getKey();
-                LogUtils.i("onNotificationRemoved zenModePolicy On");
-            }
-            LogUtils.i("onNotificationPosted ongoingNotification" + sbn.getKey() + " pkgName:" + notificationPKGName);
+            originals.finish(delivery);
+            if (maybeZenModePolicy(sbn)) zenModePolicyKey = sbn.getKey();
         }
     }
 
-    /**
-     * 移除通知时
-     */
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         super.onNotificationRemoved(sbn);
-        if (sbn != null) {
-            String key = sbn.getKey();
-            if (!TextUtils.isEmpty(zenModePolicyKey) && zenModePolicyKey.equals(key)) {
-                zenModePolicyKey = "";
-                LogUtils.i("onNotificationRemoved zenModePolicy Off");
-                return;
-            }
-            LogUtils.i("onNotificationRemoved " + key);
-//            BarrageHelper.get().removeBarrageInfo(key);
-        }
+        if (sbn == null) return;
+        onMain(() -> {
+            originals.removed(sbn.getKey(), sbn.getPostTime());
+            if (sbn.getKey().equals(zenModePolicyKey)) zenModePolicyKey = "";
+        });
     }
 
     public void cleanNeedNoticeList() {
-        for (int i = 0; i < needCleanNoticeList.size(); i++) {
-            cancelNotification(needCleanNoticeList.get(i));
+        onMain(() -> scheduleDismissals(0));
+    }
+
+    private void scheduleDismissals(long delay) {
+        if (!dismissalScheduled && connected && AppStatusConfig.get().isScreenUnPresent()) {
+            dismissalScheduled = true;
+            main.postDelayed(drainCommitted, delay);
         }
-        needCleanNoticeList.clear();
+    }
+
+    private void dismissCommittedBatch() {
+        dismissalScheduled = false;
+        if (!connected || !AppStatusConfig.get().isScreenUnPresent()) return;
+        List<OriginalDismissals.Delivery> batch = originals.committedBatch(DISMISS_BATCH_SIZE);
+        if (batch.isEmpty()) return;
+        try {
+            String[] keys = new String[batch.size()];
+            for (int i = 0; i < keys.length; i++) keys[i] = batch.get(i).key;
+            StatusBarNotification[] active = getActiveNotifications(keys);
+            if (active != null) {
+                for (OriginalDismissals.Delivery delivery : batch) {
+                    if (!originals.canDismiss(delivery)) continue;
+                    for (StatusBarNotification candidate : active) {
+                        // Android only cancels by key, so the lookup and cancellation are not atomic.
+                        if (delivery.key.equals(candidate.getKey())
+                                && delivery.postTime == candidate.getPostTime()
+                                && candidate.isClearable() && !candidate.isOngoing()) {
+                            cancelNotification(delivery.key);
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (RuntimeException e) {
+            LogUtils.w("delivery phase=original_cancel_failed error=" + e.getClass().getSimpleName());
+        } finally {
+            for (OriginalDismissals.Delivery delivery : batch) originals.finish(delivery);
+        }
+        // A long locked-screen backlog must not monopolize the application's main thread.
+        if (batch.size() == DISMISS_BATCH_SIZE) scheduleDismissals(16);
+    }
+
+    private void clearDismissals() {
+        main.removeCallbacks(drainCommitted);
+        dismissalScheduled = false;
+        originals.reset();
+    }
+
+    private void onMain(Runnable action) {
+        if (Looper.myLooper() == Looper.getMainLooper()) action.run();
+        else main.post(action);
     }
 
     public boolean isZenMode() {
@@ -114,6 +160,13 @@ public class MainNoticeListenerService extends NotificationListenerService {
     @Override
     public void onListenerConnected() {
         super.onListenerConnected();
+        onMain(this::handleListenerConnected);
+    }
+
+    private void handleListenerConnected() {
+        connected = true;
+        clearDismissals();
+        zenModePolicyKey = "";
         AppStatusConfig.get().register(this);
         ProcessFactory.get().initProcess();
         NotificationHelper.get().bindListenerService(this);
@@ -137,31 +190,30 @@ public class MainNoticeListenerService extends NotificationListenerService {
     @Override
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
-        LogUtils.i("onListenerDisconnected " + Thread.currentThread());
-        NotificationHelper.get().unBindListenerService();
+        onMain(this::handleListenerDisconnected);
+    }
+
+    private void handleListenerDisconnected() {
+        connected = false;
+        clearDismissals();
+        zenModePolicyKey = "";
+        NotificationHelper.get().unBindListenerService(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             try {
-                // A disconnected listener receives no more callbacks. Ask the system to bind it again.
-            NotificationListenerService.requestRebind(
-                    new ComponentName(this, MainNoticeListenerService.class));
-        } catch (Exception e) {
-                LogUtils.e("requestRebind notification listener failed: " + e.getMessage());
-                LogUtils.e(e);
-        }
+                NotificationListenerService.requestRebind(
+                        new ComponentName(this, MainNoticeListenerService.class));
+            } catch (RuntimeException e) {
+                LogUtils.w("delivery phase=rebind_failed error=" + e.getClass().getSimpleName());
+            }
         }
     }
 
-    //异常关闭后尝试重启
-    private void requestEnable() {
-        try {
-            PackageManager pm = getPackageManager();
-            pm.setComponentEnabledSetting(new ComponentName(this, MainNoticeListenerService.class),
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-            pm.setComponentEnabledSetting(new ComponentName(this, MainNoticeListenerService.class),
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void onDestroy() {
+        connected = false;
+        clearDismissals();
+        NotificationHelper.get().unBindListenerService(this);
+        super.onDestroy();
     }
 
     private boolean maybeZenModePolicy(StatusBarNotification sbn) {

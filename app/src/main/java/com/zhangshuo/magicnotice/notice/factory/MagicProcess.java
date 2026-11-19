@@ -1,11 +1,12 @@
 package com.zhangshuo.magicnotice.notice.factory;
 
 import android.app.PendingIntent;
-import android.content.Context;
+import android.os.SystemClock;
 
 import com.zhangshuo.common.model.EventMessage;
 import com.zhangshuo.common.util.AsyncCallback;
 import com.zhangshuo.common.util.EventBusUtil;
+import com.zhangshuo.common.util.LogUtils;
 import com.zhangshuo.magicnotice.barrage.BehaviorHelper;
 import com.zhangshuo.magicnotice.config.EventCodes;
 import com.zhangshuo.magicnotice.db.model.NotificationData;
@@ -26,10 +27,13 @@ import java.util.List;
 /**
  * 处理数据
  */
-public class MagicProcess implements IProcess<NotificationInfo, Boolean> {
+public class MagicProcess {
     private List<ConfigRuleModel> closeConfigRuleModelList = new LinkedList<>();
     private List<ConfigRuleModel> openConfigRuleModelList = new LinkedList<>();
     private List<TabInfo> tabInfoList = new ArrayList<>();
+    private static final int MAX_PENDING_RULES = 32;
+    private final LinkedList<Runnable> pendingRules = new LinkedList<>();
+    private final RuleReloadState rules = new RuleReloadState();
 
     public MagicProcess() {
         refreshConfigRule();
@@ -37,9 +41,11 @@ public class MagicProcess implements IProcess<NotificationInfo, Boolean> {
     }
 
     public void refreshConfigRule() {
+        final int generation = rules.begin();
         ConfigRuleDataService.findConfigRuleList(new AsyncCallback<List<ConfigRuleModel>>() {
             @Override
             public void onSuccess(List<ConfigRuleModel> result) {
+                if (!rules.finish(generation, true)) return;
                 closeConfigRuleModelList.clear();
                 openConfigRuleModelList.clear();
                 for (int i = 0; i < result.size(); i++) {
@@ -50,6 +56,15 @@ public class MagicProcess implements IProcess<NotificationInfo, Boolean> {
                         closeConfigRuleModelList.add(configRuleModel);
                     }
                 }
+                finishRuleLoad();
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                if (!rules.finish(generation, false)) return;
+                LogUtils.w("delivery phase=rules_load_failed error=" + error.getClass().getSimpleName());
+                // Fail open: archive pending posts without using stale policy for side effects.
+                finishRuleLoad();
             }
         });
     }
@@ -82,34 +97,68 @@ public class MagicProcess implements IProcess<NotificationInfo, Boolean> {
         return null;
     }
 
-    @Override
-    public Boolean onProcess(Context context, NotificationInfo notificationInfo) {
-        //判断有没有命中
-        String packageName = notificationInfo.getPackageName();
-        ConfigRuleModel configRuleModel = checkFitStatus(notificationInfo);
-        String key = notificationInfo.getKey();
-        PendingIntent pendingIntent = notificationInfo.getPendingIntent();
-        NotificationDataService.insertNotificationInfo(notificationInfo, configRuleModel, new AsyncCallback<NotificationData>() {
+    private void finishRuleLoad() {
+        while (!pendingRules.isEmpty()) pendingRules.removeFirst().run();
+    }
+
+    /** Internal synthetic events have no original Android notification to dismiss. */
+    public void onProcess(NotificationInfo info) {
+        onProcess(info, SystemClock.elapsedRealtime(), dismissal -> {});
+    }
+
+    public void onProcess(NotificationInfo info, long received, ProcessFactory.Completion completion) {
+        if (!rules.isLoading()) {
+            processWithRules(info, received, completion);
+        } else if (pendingRules.size() < MAX_PENDING_RULES) {
+            pendingRules.add(() -> processWithRules(info, received, completion));
+        } else {
+            // Never filter an original based on an incomplete rules snapshot.
+            persist(info, null, rules.currentGeneration(), received, completion);
+        }
+    }
+
+    private void processWithRules(NotificationInfo info, long received, ProcessFactory.Completion completion) {
+        int generation = rules.currentGeneration();
+        ConfigRuleModel rule = null;
+        try {
+            if (rules.canAct(generation)) rule = checkFitStatus(info);
+        } catch (RuntimeException e) {
+            LogUtils.w("delivery phase=rule_match_failed error=" + e.getClass().getSimpleName());
+        }
+        persist(info, rule, generation, received, completion);
+    }
+
+    private void persist(NotificationInfo notificationInfo, ConfigRuleModel rule, int generation, long received,
+                         ProcessFactory.Completion completion) {
+        final String packageName = notificationInfo.getPackageName();
+        final String key = notificationInfo.getKey();
+        final PendingIntent pendingIntent = notificationInfo.getPendingIntent();
+        NotificationDataService.insertNotificationInfo(notificationInfo, rule, new AsyncCallback<NotificationData>() {
             @Override
             public void onSuccess(NotificationData result) {
-                //保存pending
-                if (pendingIntent != null)
-                    NotificationHelper.get().addPendingIntent(
-                            packageName,
-                            key,
-                            pendingIntent,
+                if (result == null) {
+                    completion.persisted(null);
+                    return;
+                }
+                LogUtils.i("delivery phase=committed callback_ms=" + (SystemClock.elapsedRealtime() - received));
+                if (pendingIntent != null) {
+                    NotificationHelper.get().addPendingIntent(packageName, key, pendingIntent,
                             notificationInfo.getUnreadConversation());
-                //本地保存成功，则进行命中规则处理
-                if (configRuleModel != null) {
-                    List<BehaviorModel> behaviorList = configRuleModel.getBehaviorList();
-                    BehaviorHelper.exec(result, behaviorList);
                 }
-                if (result != null) {
-                    EventBusUtil.sendEvent(new EventMessage<Integer>(EventCodes.INSERT_NEW_NOTIFICATION, 1));
-                }
+                boolean ruleCurrent = rule != null && rules.canAct(generation);
+                completion.persisted(ruleCurrent && !rule.isRetain()
+                        ? () -> rules.canAct(generation) && !rule.isRetain()
+                        : null);
+                EventBusUtil.sendEvent(new EventMessage<Integer>(EventCodes.INSERT_NEW_NOTIFICATION, result.getId()));
+                if (ruleCurrent) BehaviorHelper.exec(result, rule.getBehaviorList());
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                LogUtils.w("delivery phase=write_failed error=" + error.getClass().getSimpleName());
+                completion.persisted(null);
             }
         });
-        return checkNeedRetainNotify(configRuleModel);
     }
 
     private ConfigRuleModel checkFitStatus(NotificationInfo notificationInfo) {
@@ -150,8 +199,4 @@ public class MagicProcess implements IProcess<NotificationInfo, Boolean> {
     }
 
 
-    //检查是否需要保留原始通知
-    private boolean checkNeedRetainNotify(ConfigRuleModel configRuleModel) {
-        return configRuleModel != null && !configRuleModel.isRetain();
-    }
 }

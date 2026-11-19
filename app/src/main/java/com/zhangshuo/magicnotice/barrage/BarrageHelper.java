@@ -36,6 +36,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BarrageHelper {
     //注意，同一个key的通知，进行规整，避免出现大量的弹幕内容
+    private static final int MAX_PENDING_BARRAGES = 64;
     private List<BarrageInfo> barrageInfoList = new CopyOnWriteArrayList<>();
     private ArrayMap<Integer, BarrageWindow> barrageWindowMap = new ArrayMap<>();
     private BarrageGlobalConfig barrageGlobalConfig;
@@ -57,6 +58,10 @@ public class BarrageHelper {
         //添加到尾巴处
         BarrageInfo barrageInfo = new BarrageInfo(notificationData, behaviorModel);
         barrageInfo.setCount(sameKeyCount + 1);
+        if (barrageInfoList.size() >= MAX_PENDING_BARRAGES) {
+            barrageInfoList.remove(0);
+            LogUtils.i("delivery phase=overlay_queue_capped");
+        }
         barrageInfoList.add(barrageInfo);
         barrageLineHeight = UIUtil.dp2Px(behaviorModel.getTxtSizeSP() + 16);
         checkBarrageStatus();
@@ -257,12 +262,14 @@ public class BarrageHelper {
                     tmpGlobalConfig = BarrageGlobalConfig.getDefault();
                 }
                 setBarrageGlobalConfig(tmpGlobalConfig);
+                checkBarrageStatus();
             }
 
             @Override
             public void onError(Throwable t) {
                 BarrageGlobalConfig tmpGlobalConfig = BarrageGlobalConfig.getDefault();
                 setBarrageGlobalConfig(tmpGlobalConfig);
+                checkBarrageStatus();
             }
         });
     }

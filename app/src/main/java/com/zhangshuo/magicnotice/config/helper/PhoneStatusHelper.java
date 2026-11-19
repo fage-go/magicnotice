@@ -7,7 +7,6 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
-import com.zhangshuo.common.AppUtil;
 import com.zhangshuo.common.util.LogUtils;
 import com.zhangshuo.common.util.StringUtil;
 import com.zhangshuo.magicnotice.R;
@@ -66,7 +65,7 @@ public class PhoneStatusHelper extends StatusHelper<String> {
         notificationInfo.setPostTime(System.currentTimeMillis());
         notificationInfo.setPackageName(phonePackageName);
         notificationInfo.setContent(phoneNum);
-        magicProcess.onProcess(AppUtil.get().getApplication(), notificationInfo);
+        magicProcess.onProcess(notificationInfo);
     }
 
     public void unRegister(Context context) {

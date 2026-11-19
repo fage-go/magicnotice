@@ -1,6 +1,9 @@
 package com.zhangshuo.magicnotice.ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.ScaleAnimation;
@@ -38,6 +41,36 @@ public class IndexItemFragment extends BaseFragment<FragmentIndexItemBinding> {
     private boolean haveInit = false;
     private LinearLayoutManager linearLayoutManager;
     private boolean scrollToTopPending;
+    private final Handler refreshHandler = new Handler(Looper.getMainLooper());
+    private final Runnable liveRefresh = this::refreshNewAtTop;
+    private boolean haveNewRows;
+    private boolean liveRefreshScheduled;
+    private int queriesInFlight;
+    private int viewGeneration;
+    private int manualQueryGeneration;
+    private int liveFailures;
+    private long liveRetryAt;
+    private static final int MAX_AUTOMATIC_RETRIES = 4;
+
+    private boolean atTop() {
+        return getView() != null && binding != null
+                && binding.rvList.getScrollState() == RecyclerView.SCROLL_STATE_IDLE
+                && !binding.rvList.canScrollVertically(-1);
+    }
+
+    private void scheduleLiveRefresh() {
+        if (!haveNewRows || !isResumed() || !atTop() || queriesInFlight != 0 || liveRefreshScheduled) return;
+        liveRefreshScheduled = true;
+        long delay = Math.max(200, liveRetryAt - SystemClock.uptimeMillis());
+        refreshHandler.postDelayed(liveRefresh, delay);
+    }
+
+    private void refreshNewAtTop() {
+        liveRefreshScheduled = false;
+        if (!haveNewRows || !isResumed() || !atTop() || queriesInFlight != 0) return;
+        haveNewRows = false;
+        queryDataList(true, notificationAdapter.getItemCount() == 0, true);
+    }
 
     public IndexItemFragment() {
 
@@ -108,6 +141,11 @@ public class IndexItemFragment extends BaseFragment<FragmentIndexItemBinding> {
         binding.rvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) scheduleLiveRefresh();
+            }
+
+            @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (linearLayoutManager != null) {
@@ -124,6 +162,7 @@ public class IndexItemFragment extends BaseFragment<FragmentIndexItemBinding> {
                         binding.fabTop.setVisibility(View.GONE);
                     }
                 }
+                scheduleLiveRefresh();
             }
         });
         binding.fabTop.setOnClickListener(new OnClickCallback() {
@@ -165,13 +204,28 @@ public class IndexItemFragment extends BaseFragment<FragmentIndexItemBinding> {
     @Override
     public void onResume() {
         super.onResume();
+        liveFailures = 0;
+        liveRetryAt = 0;
         if (!haveInit) {
             queryDataList(true, true);
             haveInit = true;
+        } else {
+            haveNewRows = true;
         }
         if (scrollToTopPending) {
             scrollToTop();
         }
+        scheduleLiveRefresh();
+    }
+
+    @Override
+    public void onDestroyView() {
+        refreshHandler.removeCallbacks(liveRefresh);
+        liveRefreshScheduled = false;
+        queriesInFlight = 0;
+        viewGeneration++;
+        haveInit = false;
+        super.onDestroyView();
     }
 
     public void checkReset(TabInfo tab) {
@@ -190,7 +244,10 @@ public class IndexItemFragment extends BaseFragment<FragmentIndexItemBinding> {
     @Override
     public void onReceiveEvent(EventMessage eventMessage) {
         super.onReceiveEvent(eventMessage);
-        if (eventMessage.getCode() == EventCodes.UPDATE_INDEX_NOTIFICATION) {
+        if (eventMessage.getCode() == EventCodes.INSERT_NEW_NOTIFICATION) {
+            haveNewRows = true;
+            scheduleLiveRefresh();
+        } else if (eventMessage.getCode() == EventCodes.UPDATE_INDEX_NOTIFICATION) {
             queryDataList(true, true);
         } else if (eventMessage.getCode() == EventCodes.REFRESH_NOTIFICATION_LOCK) {
             //如果不是-1
@@ -245,9 +302,27 @@ public class IndexItemFragment extends BaseFragment<FragmentIndexItemBinding> {
 
 
     private void queryDataList(boolean refresh, boolean allData) {
+        queryDataList(refresh, allData, false);
+    }
+
+    private void queryDataList(boolean refresh, boolean allData, boolean live) {
+        if (tabInfo == null || binding == null) return;
+        final int generation = viewGeneration;
+        final int manualGeneration = live ? manualQueryGeneration : ++manualQueryGeneration;
+        queriesInFlight++;
         AsyncCallback<Page<NotificationData>> callback = new AsyncCallback<Page<NotificationData>>() {
             @Override
             public void onSuccess(Page<NotificationData> result) {
+                if (generation != viewGeneration || getView() == null) return;
+                queriesInFlight--;
+                if (live && (!isResumed() || !atTop() || queriesInFlight != 0
+                        || manualGeneration != manualQueryGeneration)) {
+                    haveNewRows = true;
+                    scheduleLiveRefresh();
+                    return;
+                }
+                liveFailures = 0;
+                liveRetryAt = 0;
                 int size = result.getCount();
                 if (refresh) {
                     //如果是刷新
@@ -286,6 +361,27 @@ public class IndexItemFragment extends BaseFragment<FragmentIndexItemBinding> {
 
                 binding.pageViewResult.changePageState(notificationAdapter.getItemCount() == 0
                         ? PageState.empty() : PageState.content());
+                if (live && size > 0) linearLayoutManager.scrollToPositionWithOffset(0, 0);
+                if (live && !allData && size == 20) haveNewRows = true;
+                scheduleLiveRefresh();
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                if (generation != viewGeneration) return;
+                queriesInFlight--;
+                if (getView() == null) return;
+                if (live) {
+                    haveNewRows = true;
+                    liveFailures = Math.min(liveFailures + 1, MAX_AUTOMATIC_RETRIES + 1);
+                    liveRetryAt = SystemClock.uptimeMillis() +
+                            Math.min(4000L, 500L << (liveFailures - 1));
+                    if (liveFailures <= MAX_AUTOMATIC_RETRIES) scheduleLiveRefresh();
+                    return;
+                }
+                if (refresh) binding.refreshLayout.finishRefresh(false);
+                else binding.refreshLayout.finishLoadMore(false);
+                scheduleLiveRefresh();
             }
         };
         //如果是刷新
@@ -298,13 +394,13 @@ public class IndexItemFragment extends BaseFragment<FragmentIndexItemBinding> {
             }
             if (-2 == tabInfo.getId()) {
                 //如果是全部
-                NotificationDataService.findNewAllNotificationList(firstId, pageSize, callback);
+                NotificationDataService.findNewAllNotificationList(firstId, pageSize, !live, callback);
             } else if (-1 == tabInfo.getId()) {
                 //如果是收藏
-                NotificationDataService.findNewLockNotificationList(firstId, pageSize, callback);
+                NotificationDataService.findNewLockNotificationList(firstId, pageSize, !live, callback);
             } else {
                 //如果是其他的
-                NotificationDataService.findNewRuleNotificationList(firstId, pageSize, tabInfo, callback);
+                NotificationDataService.findNewRuleNotificationList(firstId, pageSize, tabInfo, !live, callback);
             }
 
         } else {
@@ -316,13 +412,13 @@ public class IndexItemFragment extends BaseFragment<FragmentIndexItemBinding> {
             }
             if (-2 == tabInfo.getId()) {
                 //如果是全部
-                NotificationDataService.findOldAllNotificationList(lastId, pageSize, callback);
+                NotificationDataService.findOldAllNotificationList(lastId, pageSize, !live, callback);
             } else if (-1 == tabInfo.getId()) {
                 //如果是收藏
-                NotificationDataService.findOldLockNotificationList(lastId, pageSize, callback);
+                NotificationDataService.findOldLockNotificationList(lastId, pageSize, !live, callback);
             } else {
                 //如果是其他的
-                NotificationDataService.findOldRuleNotificationList(lastId, pageSize, tabInfo, callback);
+                NotificationDataService.findOldRuleNotificationList(lastId, pageSize, tabInfo, !live, callback);
             }
         }
     }

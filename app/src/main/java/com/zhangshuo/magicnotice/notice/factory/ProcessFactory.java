@@ -2,6 +2,7 @@ package com.zhangshuo.magicnotice.notice.factory;
 
 import android.content.Context;
 import android.service.notification.StatusBarNotification;
+import android.os.SystemClock;
 
 import com.zhangshuo.common.util.LogUtils;
 import com.zhangshuo.magicnotice.notice.model.NotificationInfo;
@@ -12,27 +13,33 @@ public class ProcessFactory {
     //如果需要处理
     private MagicProcess magicProcess;
 
-    public boolean onProcess(Context context, StatusBarNotification statusBarNotification) {
-        boolean isNeedClear = false;
-        long startTime = System.currentTimeMillis();
-        NotificationInfo notificationInfo = null;
-        LogUtils.i("onProcess>" + " start " + System.currentTimeMillis());
-        try {
-            notificationInfo = getDecodeProcess().onProcess(context, statusBarNotification);
-            if (notificationInfo != null) {
-                isNeedClear = getMagicProcess().onProcess(context, notificationInfo);
-            }
-        } catch (Exception e) {
-            LogUtils.e(e);
-        }
-        LogUtils.i("onProcess>" + " needClear:" + isNeedClear + " end. time: " + (System.currentTimeMillis() - startTime) + "ms");
-        return isNeedClear;
+    public interface DismissalPolicy {
+        boolean allowed();
     }
 
+    public interface Completion {
+        void persisted(DismissalPolicy dismissOriginal);
+    }
+
+    public void onProcess(Context context, StatusBarNotification notification, long received, Completion completion) {
+        try {
+            NotificationInfo decoded = getDecodeProcess().onProcess(context, notification);
+            if (decoded != null) {
+                LogUtils.i("delivery phase=decoded callback_ms=" + (SystemClock.elapsedRealtime() - received));
+                getMagicProcess().onProcess(decoded, received, completion);
+                return;
+            }
+            LogUtils.i("delivery phase=decode_skipped");
+        } catch (RuntimeException e) {
+            LogUtils.w("delivery phase=process_failed error=" + e.getClass().getSimpleName());
+        }
+        completion.persisted(null);
+    }
 
     public void initProcess() {
-        decodeProcess = new DecodeProcess();
-        magicProcess = new MagicProcess();
+        getDecodeProcess();
+        if (magicProcess == null) getMagicProcess(); // constructor starts the first load
+        else magicProcess.refreshConfigRule();
     }
 
     public DecodeProcess getDecodeProcess() {

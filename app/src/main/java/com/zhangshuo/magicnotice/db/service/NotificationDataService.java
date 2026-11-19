@@ -1,6 +1,7 @@
 package com.zhangshuo.magicnotice.db.service;
 
 import android.text.TextUtils;
+import android.os.SystemClock;
 
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.FileUtils;
@@ -8,6 +9,7 @@ import com.zhangshuo.common.util.AsyncCallUtils;
 import com.zhangshuo.common.util.AsyncCallback;
 import com.zhangshuo.common.util.FileUtil;
 import com.zhangshuo.common.util.LocalDataUtil;
+import com.zhangshuo.common.util.LogUtils;
 import com.zhangshuo.common.util.StringUtil;
 import com.zhangshuo.magicnotice.config.LocalDataKeys;
 import com.zhangshuo.magicnotice.db.AppDatabase;
@@ -109,9 +111,12 @@ public class NotificationDataService {
     }
 
     public static void insertNotificationInfo(NotificationInfo notificationInfo, ConfigRuleModel configRuleModel, AsyncCallback<NotificationData> callback) {
+        final long enqueued = SystemClock.elapsedRealtime();
         AsyncCallUtils.asyncSingleCall(new Callable<NotificationData>() {
             @Override
             public NotificationData call() throws Exception {
+                final long started = SystemClock.elapsedRealtime();
+                LogUtils.i("delivery phase=write_started queue_ms=" + (started - enqueued));
                 NotificationData notificationData = new NotificationData();
                 notificationData.setNoticeId(notificationInfo.getId());
                 notificationData.setKey(notificationInfo.getKey());
@@ -128,28 +133,49 @@ public class NotificationDataService {
                 //获取appName
                 notificationData.setAppName(AppUtils.getAppName(notificationInfo.getPackageName()));
                 //获取icon
-                String logoPath = FileUtil.saveLogoToCache(notificationData.getPackageName());
-                String iconPath = FileUtil.saveIconToCache(notificationInfo.getIcon(), notificationInfo.getIconColor(), notificationData.getPackageName(), notificationData.getKey());
-                String picturePath = FileUtil.saveBitmapToCache(notificationInfo.getPictureBitmap(), null, notificationData.getKey());
+                String logoPath = cacheImage(() -> FileUtil.saveLogoToCache(notificationData.getPackageName()));
+                String iconPath = cacheImage(() -> FileUtil.saveIconToCache(notificationInfo.getIcon(),
+                        notificationInfo.getIconColor(), notificationData.getPackageName(), notificationData.getKey()));
+                String picturePath = cacheImage(() -> FileUtil.saveBitmapToCache(
+                        notificationInfo.getPictureBitmap(), null, notificationData.getKey()));
                 notificationData.setLogoPath(logoPath);
                 notificationData.setIconPath(iconPath);
                 notificationData.setPicturePath(picturePath);
                 Long id = AppDatabase.getInstance().notificationDataDao()
                         .insert(notificationData);
                 notificationData.setId(Math.toIntExact(id));
+                LogUtils.i("delivery phase=write_done work_ms=" + (SystemClock.elapsedRealtime() - started));
                 return notificationData;
             }
         }, callback);
     }
 
 
+    private static String cacheImage(Callable<String> write) {
+        try {
+            String path = write.call();
+            if (path != null && !path.isEmpty()) {
+                java.io.File cached = new java.io.File(path);
+                if (cached.isFile() && cached.length() > 0) return path;
+            }
+        } catch (Exception e) {
+            LogUtils.w("delivery phase=media_cache_failed error=" + e.getClass().getSimpleName());
+        }
+        return "";
+    }
+
     public static void findNewAllNotificationList(int id, int pageSize, AsyncCallback<Page<NotificationData>> callback) {
+        findNewAllNotificationList(id, pageSize, true, callback);
+    }
+
+    public static void findNewAllNotificationList(int id, int pageSize,
+                                         boolean markRead, AsyncCallback<Page<NotificationData>> callback) {
         AsyncCallUtils.asyncCall(new Callable<Page<NotificationData>>() {
             @Override
             public Page<NotificationData> call() throws Exception {
                 List<NotificationData> newDataList = AppDatabase.getInstance().notificationDataDao()
                         .findNewAllDataList(id, pageSize);
-                if (newDataList.size() > 0) {
+                if (markRead && newDataList.size() > 0) {
                     AppDatabase.getInstance().notificationDataDao()
                             .updateAllDataRead(newDataList.get(newDataList.size() - 1).getId());
                 }
@@ -161,12 +187,17 @@ public class NotificationDataService {
     }
 
     public static void findNewLockNotificationList(int id, int pageSize, AsyncCallback<Page<NotificationData>> callback) {
+        findNewLockNotificationList(id, pageSize, true, callback);
+    }
+
+    public static void findNewLockNotificationList(int id, int pageSize,
+                                         boolean markRead, AsyncCallback<Page<NotificationData>> callback) {
         AsyncCallUtils.asyncCall(new Callable<Page<NotificationData>>() {
             @Override
             public Page<NotificationData> call() throws Exception {
                 List<NotificationData> newDataList = AppDatabase.getInstance().notificationDataDao()
                         .findNewLockDataList(id, pageSize);
-                if (newDataList.size() > 0) {
+                if (markRead && newDataList.size() > 0) {
                     AppDatabase.getInstance().notificationDataDao()
                             .updateLockDataRead(newDataList.get(newDataList.size() - 1).getId());
                 }
@@ -178,6 +209,11 @@ public class NotificationDataService {
     }
 
     public static void findNewRuleNotificationList(int id, int pageSize, TabInfo tabInfo, AsyncCallback<Page<NotificationData>> callback) {
+        findNewRuleNotificationList(id, pageSize, tabInfo, true, callback);
+    }
+
+    public static void findNewRuleNotificationList(int id, int pageSize, TabInfo tabInfo,
+                                         boolean markRead, AsyncCallback<Page<NotificationData>> callback) {
         AsyncCallUtils.asyncCall(new Callable<Page<NotificationData>>() {
             @Override
             public Page<NotificationData> call() throws Exception {
@@ -195,7 +231,7 @@ public class NotificationDataService {
                 }
                 List<NotificationData> newDataList = AppDatabase.getInstance().notificationDataDao()
                         .findNewRuleDataList(id, startDay, ruleIds.size(), ruleIds, pkgNames.size(), pkgNames, pageSize);
-                if (newDataList.size() > 0) {
+                if (markRead && newDataList.size() > 0) {
                     AppDatabase.getInstance().notificationDataDao()
                             .updateRuleDataRead(startDay, ruleIds.size(), ruleIds, pkgNames.size(), pkgNames, newDataList.get(newDataList.size() - 1).getId());
                 }
@@ -208,12 +244,17 @@ public class NotificationDataService {
 
 
     public static void findOldAllNotificationList(int id, int pageSize, AsyncCallback<Page<NotificationData>> callback) {
+        findOldAllNotificationList(id, pageSize, true, callback);
+    }
+
+    public static void findOldAllNotificationList(int id, int pageSize,
+                                         boolean markRead, AsyncCallback<Page<NotificationData>> callback) {
         AsyncCallUtils.asyncCall(new Callable<Page<NotificationData>>() {
             @Override
             public Page<NotificationData> call() throws Exception {
                 List<NotificationData> oldDataList = AppDatabase.getInstance().notificationDataDao()
                         .findOldAllDataList(id, pageSize);
-                if (oldDataList.size() > 0) {
+                if (markRead && oldDataList.size() > 0) {
                     AppDatabase.getInstance().notificationDataDao()
                             .updateAllDataRead(oldDataList.get(0).getId());
                 }
@@ -224,12 +265,17 @@ public class NotificationDataService {
     }
 
     public static void findOldLockNotificationList(int id, int pageSize, AsyncCallback<Page<NotificationData>> callback) {
+        findOldLockNotificationList(id, pageSize, true, callback);
+    }
+
+    public static void findOldLockNotificationList(int id, int pageSize,
+                                         boolean markRead, AsyncCallback<Page<NotificationData>> callback) {
         AsyncCallUtils.asyncCall(new Callable<Page<NotificationData>>() {
             @Override
             public Page<NotificationData> call() throws Exception {
                 List<NotificationData> oldDataList = AppDatabase.getInstance().notificationDataDao()
                         .findOldLockDataList(id, pageSize);
-                if (oldDataList.size() > 0) {
+                if (markRead && oldDataList.size() > 0) {
                     AppDatabase.getInstance().notificationDataDao()
                             .updateLockDataRead(oldDataList.get(0).getId());
                 }
@@ -240,6 +286,11 @@ public class NotificationDataService {
     }
 
     public static void findOldRuleNotificationList(int id, int pageSize, TabInfo tabInfo, AsyncCallback<Page<NotificationData>> callback) {
+        findOldRuleNotificationList(id, pageSize, tabInfo, true, callback);
+    }
+
+    public static void findOldRuleNotificationList(int id, int pageSize, TabInfo tabInfo,
+                                         boolean markRead, AsyncCallback<Page<NotificationData>> callback) {
         AsyncCallUtils.asyncCall(new Callable<Page<NotificationData>>() {
             @Override
             public Page<NotificationData> call() throws Exception {
@@ -257,7 +308,7 @@ public class NotificationDataService {
                 }
                 List<NotificationData> oldDataList = AppDatabase.getInstance().notificationDataDao()
                         .findOldRuleDataList(id, startDay, ruleIds.size(), ruleIds, pkgNames.size(), pkgNames, pageSize);
-                if (oldDataList.size() > 0) {
+                if (markRead && oldDataList.size() > 0) {
                     AppDatabase.getInstance().notificationDataDao()
                             .updateRuleDataRead(startDay, ruleIds.size(), ruleIds, pkgNames.size(), pkgNames, oldDataList.get(0).getId());
                 }
