@@ -141,7 +141,7 @@ public class SetFragment extends BaseFragment<FragmentSetBinding> {
             boolean enable = !LocalDataUtil.get().getData(LocalDataKeys.BKEY_KEEP_ALIVE_NOTIFICATION, false);
             LocalDataUtil.get().saveData(LocalDataKeys.BKEY_KEEP_ALIVE_NOTIFICATION, enable);
             binding.switchKeepAliveNotify.setChecked(enable);
-            NotificationHelper.get().refreshKeepAliveNotification(getCtx());
+            NotificationHelper.get().refreshListenerForeground(false);
         });
 
         binding.clNotify.setOnClickListener(v -> {
@@ -234,7 +234,6 @@ public class SetFragment extends BaseFragment<FragmentSetBinding> {
                 boolean notifyEnable = NotificationHelper.isNotificationListenerEnabled(getCtx());
                 binding.switchNotify.setChecked(notifyEnable);
                 binding.switchKeepAliveNotify.setChecked(LocalDataUtil.get().getData(LocalDataKeys.BKEY_KEEP_ALIVE_NOTIFICATION, false));
-                NotificationHelper.get().refreshKeepAliveNotification(getCtx());
                 boolean floatEnable = FloatPermissionManager.getInstance().checkPermission(getCtx());
                 binding.switchFloat.setChecked(floatEnable);
                 ActivityFreeformUtil.SupportInfo freeformSupport = ActivityFreeformUtil.isFreeformSupport(getCtx());

@@ -54,10 +54,6 @@
             </intent-filter>
         </service>
 
-        <service
-            android:name=".service.KeepAliveService"
-            android:exported="false" />
-
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"

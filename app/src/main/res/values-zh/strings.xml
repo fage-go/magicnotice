@@ -173,7 +173,7 @@
     <string name="set_ui_reply_tip">支持部分应用的通知快捷回复。</string>
     <string name="set_ui_permission_set">权限设置</string>
     <string name="set_ui_keep_alive_notify_title">通知栏常驻</string>
-    <string name="set_ui_keep_alive_notify_tip">开启后会显示一条常驻通知，用于提高后台保活能力。</string>
+    <string name="set_ui_keep_alive_notify_tip">开启后，通知监听已连接时会向系统申请前台运行并显示常驻通知，实际状态受系统限制。</string>
     <string name="set_ui_notify_title">通知访问权限</string>
     <string name="set_ui_notify_tip">需要此权限，用来读取您的通知内容。</string>
     <string name="set_ui_hide_recent">在最近任务中隐藏</string>

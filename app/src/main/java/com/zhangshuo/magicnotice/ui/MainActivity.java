@@ -105,6 +105,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
     @Override
     protected void onResume() {
         super.onResume();
+        NotificationHelper.get().refreshListenerForeground(true);
         if (firstGuideDialog == null || !firstGuideDialog.isShowing()) {
             checkPermission();
         }

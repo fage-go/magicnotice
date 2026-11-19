@@ -173,7 +173,7 @@
     <string name="set_ui_reply_tip">Supports quick Reply for some applications。</string>
     <string name="set_ui_permission_set">Permissions</string>
     <string name="set_ui_keep_alive_notify_title">Persistent notification</string>
-    <string name="set_ui_keep_alive_notify_tip">Show an ongoing notification to improve background keep-alive.</string>
+    <string name="set_ui_keep_alive_notify_tip">Request a foreground notification while the notification listener is connected. Android can restrict this.</string>
     <string name="set_ui_notify_title">Notification access</string>
     <string name="set_ui_notify_tip">need to set permissions to use the App</string>
     <string name="set_ui_hide_recent">Hide from recent tasks</string>

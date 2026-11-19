@@ -21,14 +21,11 @@ import androidx.core.app.RemoteInput;
 import com.blankj.utilcode.util.AppUtils;
 import com.zhangshuo.common.AppUtil;
 import com.zhangshuo.common.dialog.CommonDialog;
-import com.zhangshuo.common.util.LocalDataUtil;
 import com.zhangshuo.common.util.LogUtils;
 import com.zhangshuo.common.util.StringUtil;
 import com.zhangshuo.magicnotice.R;
-import com.zhangshuo.magicnotice.config.LocalDataKeys;
 import com.zhangshuo.magicnotice.db.model.NotificationData;
 import com.zhangshuo.magicnotice.notice.model.PendingInfo;
-import com.zhangshuo.magicnotice.service.KeepAliveService;
 import com.zhangshuo.magicnotice.ui.model.behavior.BarrageBehaviorModel;
 import com.zhangshuo.magicnotice.util.ActivityFreeformUtil;
 
@@ -39,7 +36,7 @@ import java.util.Set;
 
 public class NotificationHelper {
     private static final int MAX_MEMORY_NUM = 1000;
-    public static final int KEEP_ALIVE_NOTIFICATION_ID = 20001;
+    static final int KEEP_ALIVE_NOTIFICATION_ID = 20001;
     private static final String KEEP_ALIVE_CHANNEL = "CicadaKeepAlive_Channel";
     private final Map<String, PendingInfo> pendingMap = new LinkedHashMap<>();
     private MainNoticeListenerService noticeListenerService;
@@ -207,30 +204,13 @@ public class NotificationHelper {
         notificationManager.notify(schedulerNotifyId, notification);
     }
 
-    public void refreshKeepAliveNotification(Context context) {
-        boolean enable = LocalDataUtil.get().getData(LocalDataKeys.BKEY_KEEP_ALIVE_NOTIFICATION, false);
-        if (enable) {
-            startKeepAliveService(context);
-        } else {
-            stopKeepAliveService(context);
-        }
+    /** Reconcile only the listener already bound by Android, never start a service. */
+    public void refreshListenerForeground(boolean activityResumed) {
+        MainNoticeListenerService listener = noticeListenerService;
+        if (listener != null) listener.refreshBoundForeground(activityResumed);
     }
 
-    public void startKeepAliveService(Context context) {
-        Intent intent = new Intent(context, KeepAliveService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent);
-        } else {
-            context.startService(intent);
-        }
-    }
-
-    public void stopKeepAliveService(Context context) {
-        context.stopService(new Intent(context, KeepAliveService.class));
-        cancelKeepAliveNotification(context);
-    }
-
-    public Notification createKeepAliveNotification(Context context) {
+    Notification createKeepAliveNotification(Context context) {
         NotificationManager notificationManager = getNotificationManager(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(
@@ -265,11 +245,6 @@ public class NotificationHelper {
                 .build();
         return notification;
     }
-
-    public void cancelKeepAliveNotification(Context context) {
-        getNotificationManager(context).cancel(KEEP_ALIVE_NOTIFICATION_ID);
-    }
-
 
     public NotificationManager getNotificationManager(Context context) {
         if (notificationManager == null) {

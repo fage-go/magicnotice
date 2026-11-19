@@ -1,8 +1,8 @@
 package com.zhangshuo.magicnotice.notice;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.content.ComponentName;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,10 +12,12 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 
+import com.zhangshuo.common.util.LocalDataUtil;
 import com.zhangshuo.common.util.LogUtils;
 import com.zhangshuo.common.util.StringUtil;
 import com.zhangshuo.magicnotice.R;
 import com.zhangshuo.magicnotice.config.AppStatusConfig;
+import com.zhangshuo.magicnotice.config.LocalDataKeys;
 import com.zhangshuo.magicnotice.notice.factory.ProcessFactory;
 
 import java.util.List;
@@ -33,9 +35,54 @@ public class MainNoticeListenerService extends NotificationListenerService {
     private boolean connected;
     private volatile String zenModePolicyKey = "";
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_STICKY;
+    private boolean destroyed;
+    private final BoundForeground keepAlive = new BoundForeground();
+    private final BoundForeground.Host foregroundHost = new BoundForeground.Host() {
+        @Override
+        public Boolean isForeground() {
+            // Since API 26 this query is limited to the calling app's own services.
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return null;
+            ActivityManager manager = getSystemService(ActivityManager.class);
+            if (manager == null) return null;
+            ComponentName ownService = new ComponentName(MainNoticeListenerService.this,
+                    MainNoticeListenerService.class);
+            for (ActivityManager.RunningServiceInfo info : manager.getRunningServices(32)) {
+                if (ownService.equals(info.service)) return info.foreground;
+            }
+            return null;
+        }
+
+        @Override
+        public void promote() {
+            startForeground(NotificationHelper.KEEP_ALIVE_NOTIFICATION_ID,
+                    NotificationHelper.get().createKeepAliveNotification(MainNoticeListenerService.this));
+        }
+
+        @Override
+        public void demote() {
+            stopForeground(true);
+        }
+
+        @Override
+        public void failed(String action, RuntimeException error) {
+            LogUtils.w("listener_foreground action=" + action + " error=" + error.getClass().getSimpleName());
+        }
+    };
+
+    void refreshBoundForeground(boolean activityResumed) {
+        onMain(() -> keepAlive.reconcile(this::canPromote,
+                activityResumed && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O, foregroundHost));
+    }
+
+    private boolean canPromote() {
+        if (!connected || destroyed) return false;
+        if (!LocalDataUtil.get().getData(LocalDataKeys.BKEY_KEEP_ALIVE_NOTIFICATION, false)) return false;
+        try {
+            return NotificationHelper.isNotificationListenerEnabled(this);
+        } catch (RuntimeException error) {
+            foregroundHost.failed("permission", error);
+            return false;
+        }
     }
 
     /**
@@ -164,12 +211,14 @@ public class MainNoticeListenerService extends NotificationListenerService {
     }
 
     private void handleListenerConnected() {
+        if (destroyed) return;
         connected = true;
         clearDismissals();
         zenModePolicyKey = "";
         AppStatusConfig.get().register(this);
         ProcessFactory.get().initProcess();
         NotificationHelper.get().bindListenerService(this);
+        refreshBoundForeground(false);
         LogUtils.i("onListenerConnected " + Thread.currentThread());
 
         StatusBarNotification[] activeNotifications = getActiveNotifications();
@@ -195,6 +244,7 @@ public class MainNoticeListenerService extends NotificationListenerService {
 
     private void handleListenerDisconnected() {
         connected = false;
+        refreshBoundForeground(false);
         clearDismissals();
         zenModePolicyKey = "";
         NotificationHelper.get().unBindListenerService(this);
@@ -210,7 +260,9 @@ public class MainNoticeListenerService extends NotificationListenerService {
 
     @Override
     public void onDestroy() {
+        destroyed = true;
         connected = false;
+        refreshBoundForeground(false);
         clearDismissals();
         NotificationHelper.get().unBindListenerService(this);
         super.onDestroy();
