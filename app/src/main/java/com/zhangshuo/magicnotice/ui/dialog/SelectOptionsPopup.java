@@ -1,5 +1,6 @@
 package com.zhangshuo.magicnotice.ui.dialog;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.widget.LinearLayout;
 
@@ -28,6 +29,15 @@ public class SelectOptionsPopup extends BasePopupDialog<PopupSelectAnimBinding> 
 
     public SelectOptionsPopup(Fragment fragment, List<OptionModel> animOptionList, String defaultAnimValue) {
         super(fragment);
+        init(animOptionList, defaultAnimValue);
+    }
+
+    public SelectOptionsPopup(Dialog dialog, List<OptionModel> animOptionList, String defaultAnimValue) {
+        super(dialog);
+        init(animOptionList, defaultAnimValue);
+    }
+
+    private void init(List<OptionModel> animOptionList, String defaultAnimValue) {
         this.defaultAnimValue = defaultAnimValue;
         this.optionAnimList = animOptionList;
 

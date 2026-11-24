@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/base_bg_bottom_dialog"
+    android:backgroundTint="@color/base_bg_default"
     android:orientation="vertical">
 
     <TextView
@@ -16,160 +18,65 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/config_cells"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:fillViewport="false">
-        <LinearLayout
-            android:layout_width="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:orientation="horizontal">
+
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/position_cell"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="16dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/special_keep_alive_position"
-            android:textColor="@color/base_font_title"
-            android:textSize="16sp" />
-
-        <RadioGroup
-            android:id="@+id/positions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/position_top_left"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="48dp"
-                android:text="@string/special_keep_alive_top_left"
-                android:textColor="@color/base_font_title"
-                android:textSize="13sp" />
-            <RadioButton
-                android:id="@+id/position_top_right"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="48dp"
-                android:text="@string/special_keep_alive_top_right"
-                android:textColor="@color/base_font_title"
-                android:textSize="13sp" />
-            <RadioButton
-                android:id="@+id/position_bottom_left"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="48dp"
-                android:text="@string/special_keep_alive_bottom_left"
-                android:textColor="@color/base_font_title"
-                android:textSize="13sp" />
-            <RadioButton
-                android:id="@+id/position_bottom_right"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="48dp"
-                android:text="@string/special_keep_alive_bottom_right"
-                android:textColor="@color/base_font_title"
-                android:textSize="13sp" />
-        </RadioGroup>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/item_line_drawable" />
-
-        <LinearLayout
-            android:id="@+id/color_row"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
+            android:layout_weight="1"
             android:focusable="true"
-            android:gravity="center_vertical"
-            android:minHeight="48dp"
-            android:orientation="horizontal">
+            app:title="@string/special_keep_alive_position"
+            app:type="value" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/special_keep_alive_color"
-                android:textColor="@color/base_font_title"
-                android:textSize="16sp" />
-            <View
-                android:id="@+id/color_preview"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="8dp"
-                android:importantForAccessibility="no" />
-            <TextView
-                android:id="@+id/color_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/base_font_txt_sub"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/item_line_drawable" />
-
-        <LinearLayout
-            android:id="@+id/opacity_row"
-            android:layout_width="match_parent"
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/color_cell"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
             android:focusable="true"
-            android:gravity="center_vertical"
-            android:minHeight="48dp"
-            android:orientation="horizontal">
+            app:title="@string/special_keep_alive_color"
+            app:type="color" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/special_keep_alive_opacity"
-                android:textColor="@color/base_font_title"
-                android:textSize="16sp" />
-            <TextView
-                android:id="@+id/opacity_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/base_font_txt_sub"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
+        <com.zhangshuo.magicnotice.ui.view.ConfigRuleTipView
+            android:id="@+id/opacity_cell"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingBottom="12dp"
-            android:text="@string/special_keep_alive_opacity_hint"
-            android:textColor="@color/base_font_txt_sub"
-            android:textSize="12sp" />
-        </LinearLayout>
-    </ScrollView>
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:focusable="true"
+            app:title="@string/special_keep_alive_opacity"
+            app:type="value" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:minHeight="50dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/special_keep_alive_opacity_hint"
+        android:textColor="@color/base_font_txt_sub"
+        android:textSize="12sp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/confirm"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/special_keep_alive_confirm"
-        android:textColor="@color/base_font_black"
+        android:textColor="@color/base_white"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:theme="@style/Theme.MagicNotice"
+        app:backgroundTint="@color/base_font_title"
+        app:cornerRadius="4dp"
+        app:rippleColor="@color/base_font_txt" />
 </LinearLayout>
