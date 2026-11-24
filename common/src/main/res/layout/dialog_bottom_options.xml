@@ -4,6 +4,20 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/base_bg_bottom_dialog"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp"
+        android:textColor="@color/base_font_black"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
     <com.zhangshuo.common.view.MaxHeightRecyclerView
         android:id="@+id/rv_options"
         android:layout_width="match_parent"

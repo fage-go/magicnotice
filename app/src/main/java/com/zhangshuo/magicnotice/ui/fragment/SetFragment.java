@@ -1,7 +1,6 @@
 package com.zhangshuo.magicnotice.ui.fragment;
 
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -17,10 +16,12 @@ import android.widget.CompoundButton;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.AppUtils;
 import com.zhangshuo.common.base.BaseFragment;
+import com.zhangshuo.common.dialog.BottomOptionDialog;
 import com.zhangshuo.common.dialog.CommonDialog;
 import com.zhangshuo.common.floatwindow.permission.FloatPermissionManager;
 import com.zhangshuo.common.listener.OnClickCallback;
@@ -50,10 +51,13 @@ import com.zhangshuo.magicnotice.ui.dialog.ShowWXDialog;
 import com.zhangshuo.magicnotice.util.ActivityFreeformUtil;
 import com.zhangshuo.magicnotice.util.ConfigInit;
 
+import java.util.Arrays;
+
 @Route(path = RoutePaths.APP_FRAGMENT_SET)
-public class SetFragment extends BaseFragment<FragmentSetBinding> {
+public class SetFragment extends BaseFragment<FragmentSetBinding>
+        implements BottomOptionDialog.OnOptionCallback {
     private boolean syncingListenerStatusDotSwitch;
-    private AlertDialog listenerStatusDotDialog;
+    private static final String LISTENER_STATUS_DOT_CHOICES = "listener_status_dot_choices";
 
 
     @Override
@@ -282,28 +286,32 @@ public class SetFragment extends BaseFragment<FragmentSetBinding> {
             showListenerStatusDotPermissionTip();
             return;
         }
-        if (listenerStatusDotDialog != null) return;
-        listenerStatusDotDialog = new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.set_ui_listener_status_dot_title)
-                .setMessage(R.string.set_ui_listener_status_dot_recommendation)
-                .setNeutralButton(android.R.string.cancel, null)
-                .setNegativeButton(R.string.set_ui_listener_status_dot_transparent,
-                        (dialog, which) -> selectListenerStatusDotMode(ListenerStatusDotMode.TRANSPARENT))
-                .setPositiveButton(R.string.set_ui_listener_status_dot_visible,
-                        (dialog, which) -> selectListenerStatusDotMode(ListenerStatusDotMode.DOT))
-                .create();
-        listenerStatusDotDialog.setOnDismissListener(dialog -> listenerStatusDotDialog = null);
-        listenerStatusDotDialog.show();
+        FragmentManager fragmentManager = getFragmentManager();
+        if (fragmentManager == null || fragmentManager.isStateSaved()
+                || fragmentManager.findFragmentByTag(LISTENER_STATUS_DOT_CHOICES) != null) {
+            return;
+        }
+        BottomOptionDialog dialog = BottomOptionDialog.withMessage(
+                getString(R.string.set_ui_listener_status_dot_recommendation),
+                Arrays.asList(
+                        getString(R.string.set_ui_listener_status_dot_transparent),
+                        getString(R.string.set_ui_listener_status_dot_visible)));
+        dialog.setTargetFragment(this, 0);
+        dialog.showNow(fragmentManager, LISTENER_STATUS_DOT_CHOICES);
     }
 
     @Override
-    public void onDestroyView() {
-        if (listenerStatusDotDialog != null) {
-            listenerStatusDotDialog.setOnDismissListener(null);
-            listenerStatusDotDialog.dismiss();
-            listenerStatusDotDialog = null;
+    public void onClick(int position) {
+        if (position == 0) {
+            selectListenerStatusDotMode(ListenerStatusDotMode.TRANSPARENT);
+        } else if (position == 1) {
+            selectListenerStatusDotMode(ListenerStatusDotMode.DOT);
         }
-        super.onDestroyView();
+    }
+
+    @Override
+    public void onCancel() {
+        // Only selecting a mode enables the switch.
     }
 
     private void selectListenerStatusDotMode(int choice) {

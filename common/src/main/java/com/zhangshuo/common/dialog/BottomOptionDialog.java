@@ -1,6 +1,7 @@
 package com.zhangshuo.common.dialog;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,23 +13,43 @@ import com.zhangshuo.common.R;
 import com.zhangshuo.common.base.BaseRAdapter;
 import com.zhangshuo.common.databinding.DialogBottomOptionsBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BottomOptionDialog extends BaseBottomSheetDialog<DialogBottomOptionsBinding> {
 
+    private static final String ARG_OPTIONS = "options";
+    private static final String ARG_MESSAGE = "message";
+
+    public static BottomOptionDialog withMessage(
+            String message, List<String> options) {
+        Bundle arguments = new Bundle();
+        arguments.putString(ARG_MESSAGE, message);
+        arguments.putStringArrayList(ARG_OPTIONS, new ArrayList<>(options));
+        BottomOptionDialog dialog = new BottomOptionDialog();
+        dialog.setArguments(arguments);
+        return dialog;
+    }
+
     public static void create(Context context, List<String> options, OnOptionCallback onOptionCallback) {
-        BottomOptionDialog bottomOptionDialog = new BottomOptionDialog();
-        bottomOptionDialog.options = options;
+        BottomOptionDialog bottomOptionDialog = withMessage(null, options);
         bottomOptionDialog.onOptionCallback = onOptionCallback;
         bottomOptionDialog.show(context);
     }
 
-    private List<String> options;
     private OnOptionCallback onOptionCallback;
 
 
     @Override
     public void initView() {
+        Bundle arguments = requireArguments();
+        List<String> options = arguments.getStringArrayList(ARG_OPTIONS);
+        String message = arguments.getString(ARG_MESSAGE);
+        if (message != null) {
+            binding.tvMessage.setText(message);
+            binding.tvMessage.setVisibility(View.VISIBLE);
+            binding.rvOptions.setBackgroundResource(R.color.base_white);
+        }
         binding.rvOptions.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         BaseRAdapter<String> adapter = new BaseRAdapter<String>(getContext()) {
             @Override
@@ -53,6 +74,8 @@ public class BottomOptionDialog extends BaseBottomSheetDialog<DialogBottomOption
                 dismiss();
                 if (onOptionCallback != null) {
                     onOptionCallback.onClick(position);
+                } else if (getTargetFragment() instanceof OnOptionCallback) {
+                    ((OnOptionCallback) getTargetFragment()).onClick(position);
                 }
             }
         });
