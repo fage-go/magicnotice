@@ -175,7 +175,7 @@
     <string name="set_ui_keep_alive_set">保活设置</string>
     <string name="set_ui_cached_apps_guidance">在开发者模式中，找到「暂停执行已缓存的应用」，然后设为「已停用」。</string>
     <string name="set_ui_listener_status_dot_title">特殊保活</string>
-    <string name="set_ui_listener_status_dot_tip">可选悬浮窗，与通知栏常驻独立。不保证后台运行，也不代表通知正在送达。</string>
+    <string name="set_ui_listener_status_dot_tip">可选悬浮窗前台显示</string>
     <string name="set_ui_listener_status_dot_recommendation">建议原点提示，其会在屏幕的最右上角显示小黑点</string>
     <string name="set_ui_listener_status_dot_transparent">透明显示</string>
     <string name="set_ui_listener_status_dot_visible">原点显示</string>
