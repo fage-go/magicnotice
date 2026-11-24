@@ -1,5 +1,6 @@
 package com.zhangshuo.magicnotice.ui.dialog;
 
+import android.app.Dialog;
 import android.graphics.Color;
 
 import androidx.fragment.app.Fragment;
@@ -33,7 +34,15 @@ public class SelectStepPopup extends BasePopupDialog<PopupSelectStepBinding> {
 
     public SelectStepPopup(Fragment fragment, List<Integer> dataList, int defaultSelect) {
         super(fragment);
+        init(dataList, defaultSelect);
+    }
 
+    public SelectStepPopup(Dialog dialog, List<Integer> dataList, int defaultSelect) {
+        super(dialog);
+        init(dataList, defaultSelect);
+    }
+
+    private void init(List<Integer> dataList, int defaultSelect) {
         setBackgroundColor(Color.TRANSPARENT);
         setWidth(-2);
         setHeight(UIUtil.dp2Px(60));

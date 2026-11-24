@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.GradientDrawable;
+import android.hardware.input.InputManager;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
@@ -26,7 +27,7 @@ final class ListenerStatusDot {
     private boolean watching;
     private View dot;
     private int sizePx;
-    private int marginPx;
+    private float attachedAlpha;
     private int attachedMode;
 
     ListenerStatusDot(Context context, Handler main, Runnable refresh) {
@@ -52,8 +53,8 @@ final class ListenerStatusDot {
                 return;
             }
             int size = dp(8);
-            int margin = dp(8);
-            if (dot != null && dot.getParent() != null && size == sizePx && margin == marginPx
+            float alpha = ListenerStatusDotMode.effectiveAlpha(mode, maximumWindowAlpha());
+            if (dot != null && dot.getParent() != null && size == sizePx && attachedAlpha == alpha
                     && attachedMode == mode) {
                 return;
             }
@@ -61,12 +62,8 @@ final class ListenerStatusDot {
             View view = new View(context);
             GradientDrawable shape = new GradientDrawable();
             shape.setShape(GradientDrawable.OVAL);
-            if (mode == ListenerStatusDotMode.DOT) {
-                shape.setColor(Color.BLACK);
-                shape.setStroke(dp(1), Color.WHITE);
-            } else {
-                shape.setColor(Color.TRANSPARENT);
-            }
+            shape.setColor(ListenerStatusDotMode.color(mode));
+            shape.setStroke(dp(1), Color.WHITE);
             view.setBackground(shape);
             view.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
             view.setClickable(false);
@@ -79,11 +76,14 @@ final class ListenerStatusDot {
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                             | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                     PixelFormat.TRANSLUCENT);
-            params.gravity = Gravity.TOP | Gravity.RIGHT;
-            params.x = margin;
-            params.y = margin;
+            int corner = ListenerStatusDotMode.corner(mode);
+            params.gravity = (corner >= ListenerStatusDotMode.BOTTOM_LEFT ? Gravity.BOTTOM : Gravity.TOP)
+                    | ((corner & 1) == 1 ? Gravity.RIGHT : Gravity.LEFT);
+            // Hug the permitted frame without placing an overlay over system bars/cutouts.
+            params.x = 0;
+            params.y = 0;
             // Set window alpha, not View alpha, for Android's obscured-touch checks.
-            params.alpha = mode == ListenerStatusDotMode.DOT ? 0.5f : 0f;
+            params.alpha = alpha;
             params.setTitle("MagicNotice listener status");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 params.layoutInDisplayCutoutMode =
@@ -96,12 +96,28 @@ final class ListenerStatusDot {
             windows.addView(view, params);
             dot = view;
             sizePx = size;
-            marginPx = margin;
+            attachedAlpha = alpha;
             attachedMode = mode;
         } catch (RuntimeException error) {
             hide();
             LogUtils.w("listener_status_dot error=" + error.getClass().getSimpleName());
         }
+    }
+
+    private float maximumWindowAlpha() {
+        if (Build.VERSION.SDK_INT < 31) return 1f;
+        try {
+            InputManager input = context.getSystemService(InputManager.class);
+            if (input != null) {
+                // Public since API 31; this project still compiles against API 30.
+                float maximum = (Float) InputManager.class
+                        .getMethod("getMaximumObscuringOpacityForTouch").invoke(input);
+                if (maximum >= 0f && maximum <= 1f) return maximum;
+            }
+        } catch (ReflectiveOperationException | RuntimeException ignored) {
+            // Use the documented default if the public API cannot be queried.
+        }
+        return 0.8f;
     }
 
     private int dp(int value) {

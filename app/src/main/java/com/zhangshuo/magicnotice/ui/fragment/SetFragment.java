@@ -21,7 +21,6 @@ import androidx.fragment.app.FragmentManager;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.AppUtils;
 import com.zhangshuo.common.base.BaseFragment;
-import com.zhangshuo.common.dialog.BottomOptionDialog;
 import com.zhangshuo.common.dialog.CommonDialog;
 import com.zhangshuo.common.floatwindow.permission.FloatPermissionManager;
 import com.zhangshuo.common.listener.OnClickCallback;
@@ -47,15 +46,14 @@ import com.zhangshuo.magicnotice.ui.dialog.ExposeDataDialog;
 import com.zhangshuo.magicnotice.ui.dialog.FingerPrintDialog;
 import com.zhangshuo.magicnotice.ui.dialog.SetLanguageDialog;
 import com.zhangshuo.magicnotice.ui.dialog.ShowEmailDialog;
+import com.zhangshuo.magicnotice.ui.dialog.SpecialKeepAliveDialog;
 import com.zhangshuo.magicnotice.ui.dialog.ShowWXDialog;
 import com.zhangshuo.magicnotice.util.ActivityFreeformUtil;
 import com.zhangshuo.magicnotice.util.ConfigInit;
 
-import java.util.Arrays;
-
 @Route(path = RoutePaths.APP_FRAGMENT_SET)
 public class SetFragment extends BaseFragment<FragmentSetBinding>
-        implements BottomOptionDialog.OnOptionCallback {
+        implements SpecialKeepAliveDialog.OnConfirm {
     private boolean syncingListenerStatusDotSwitch;
     private static final String LISTENER_STATUS_DOT_CHOICES = "listener_status_dot_choices";
 
@@ -279,7 +277,7 @@ public class SetFragment extends BaseFragment<FragmentSetBinding>
         // Restore the saved state until a user choice has been made.
         syncListenerStatusDotSwitch();
         if (ListenerStatusDotMode.isEnabled(listenerStatusDotMode())) {
-            saveListenerStatusDotMode(ListenerStatusDotMode.OFF);
+            saveListenerStatusDotMode(ListenerStatusDotMode.disable(listenerStatusDotMode()));
             return;
         }
         if (!Settings.canDrawOverlays(requireContext())) {
@@ -291,30 +289,13 @@ public class SetFragment extends BaseFragment<FragmentSetBinding>
                 || fragmentManager.findFragmentByTag(LISTENER_STATUS_DOT_CHOICES) != null) {
             return;
         }
-        BottomOptionDialog dialog = BottomOptionDialog.withMessage(
-                getString(R.string.set_ui_listener_status_dot_recommendation),
-                Arrays.asList(
-                        getString(R.string.set_ui_listener_status_dot_transparent),
-                        getString(R.string.set_ui_listener_status_dot_visible)));
+        SpecialKeepAliveDialog dialog = SpecialKeepAliveDialog.create(listenerStatusDotMode());
         dialog.setTargetFragment(this, 0);
         dialog.showNow(fragmentManager, LISTENER_STATUS_DOT_CHOICES);
     }
 
     @Override
-    public void onClick(int position) {
-        if (position == 0) {
-            selectListenerStatusDotMode(ListenerStatusDotMode.TRANSPARENT);
-        } else if (position == 1) {
-            selectListenerStatusDotMode(ListenerStatusDotMode.DOT);
-        }
-    }
-
-    @Override
-    public void onCancel() {
-        // Only selecting a mode enables the switch.
-    }
-
-    private void selectListenerStatusDotMode(int choice) {
+    public void confirmSpecialKeepAlive(int choice) {
         Context context = getContext();
         if (context == null || getView() == null) return;
         int mode = ListenerStatusDotMode.selected(choice, Settings.canDrawOverlays(context));
