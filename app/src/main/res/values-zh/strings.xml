@@ -184,7 +184,6 @@
     <string name="special_keep_alive_color">颜色</string>
     <string name="special_keep_alive_opacity">透明度</string>
     <string name="special_keep_alive_confirm">确认开启</string>
-    <string name="special_keep_alive_opacity_hint">0% 完全透明，数值越高越不透明。系统可能限制最高显示不透明度。</string>
     <string name="set_ui_listener_status_dot_permission_tip">请先授予悬浮窗权限，再开启特殊保活。</string>
     <string name="set_ui_keep_alive_notify_title">通知栏常驻</string>
     <string name="set_ui_keep_alive_notify_tip">开启后会显示一条常驻通知，用于提高后台保活能力。</string>

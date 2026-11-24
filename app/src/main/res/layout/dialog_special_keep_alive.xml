@@ -55,15 +55,6 @@
             app:type="value" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/special_keep_alive_opacity_hint"
-        android:textColor="@color/base_font_txt_sub"
-        android:textSize="12sp" />
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/confirm"
         android:layout_width="match_parent"

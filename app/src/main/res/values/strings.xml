@@ -184,7 +184,6 @@
     <string name="special_keep_alive_color">Color</string>
     <string name="special_keep_alive_opacity">Opacity</string>
     <string name="special_keep_alive_confirm">Confirm and enable</string>
-    <string name="special_keep_alive_opacity_hint">0% is invisible. Higher values are more opaque; Android may limit the maximum displayed opacity.</string>
     <string name="set_ui_listener_status_dot_permission_tip">Enable Display over other apps first. Then turn on Special keep-alive.</string>
     <string name="set_ui_keep_alive_notify_title">Persistent notification</string>
     <string name="set_ui_keep_alive_notify_tip">Show an ongoing notification to improve background keep-alive.</string>
