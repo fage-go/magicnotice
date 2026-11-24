@@ -175,12 +175,10 @@
     <string name="set_ui_keep_alive_set">保活设置</string>
     <string name="set_ui_cached_apps_guidance">在开发者模式中，找到「暂停执行已缓存的应用」，然后设为「已停用」。</string>
     <string name="set_ui_accessibility_settings_title">辅助服务</string>
-    <string name="set_ui_accessibility_settings_tip">实验功能：测试后台通知稳定性。</string>
-    <string name="set_ui_accessibility_settings_message">辅助服务只用于测试后台通知稳定性，不保证改善通知延迟。它不会读取屏幕、监听无障碍事件或模拟操作。请在系统无障碍设置中手动开启或关闭。</string>
+    <string name="set_ui_accessibility_settings_tip">增加通知了在后台运行的稳定性。</string>
+    <string name="set_ui_accessibility_settings_message">辅助服务仅用于增加通知了在后台运行的稳定性。不会读屏幕、监听任何事件、模拟操作以及读取任何数据。</string>
     <string name="set_ui_accessibility_settings_go">去开启</string>
     <string name="set_ui_accessibility_settings_manage">去设置</string>
-    <string name="experimental_accessibility_label">通知了辅助服务（实验）</string>
-    <string name="experimental_accessibility_description">测试系统服务绑定对后台通知稳定性的影响。不读取屏幕、不监听无障碍事件、不模拟操作。</string>
     <string name="set_ui_accessibility_settings_unavailable">此设备无法打开系统无障碍设置。</string>
     <string name="set_ui_listener_status_dot_title">特殊保活</string>
     <string name="set_ui_listener_status_dot_tip">可选悬浮窗前台显示</string>

@@ -3,5 +3,5 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:canRetrieveWindowContent="false"
-    android:description="@string/experimental_accessibility_description"
+    android:description="@string/set_ui_accessibility_settings_message"
     android:summary="@string/set_ui_accessibility_settings_tip" />
