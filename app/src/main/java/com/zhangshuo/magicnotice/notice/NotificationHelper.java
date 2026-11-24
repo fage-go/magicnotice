@@ -285,6 +285,11 @@ public class NotificationHelper {
         }
     }
 
+    public void refreshListenerStatusDot() {
+        MainNoticeListenerService listener = noticeListenerService;
+        if (listener != null) listener.refreshListenerStatusDot();
+    }
+
     public void bindListenerService(MainNoticeListenerService service) {
         this.noticeListenerService = service;
     }

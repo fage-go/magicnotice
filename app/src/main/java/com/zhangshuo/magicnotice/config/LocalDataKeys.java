@@ -27,6 +27,7 @@ public class LocalDataKeys {
     public static final String BKEY_HIDE_RECENT = "bkey_hide_recent";
     public static final String BKEY_AUTO_REPLAY = "bkey_auto_replay";
     public static final String BKEY_KEEP_ALIVE_NOTIFICATION = "bkey_keep_alive_notification";
+    public static final String IKEY_LISTENER_STATUS_DOT = "ikey_listener_status_dot";
 
     public static final String SKEY_NO_HIT_CLEAN_TIME = "skey_no_hit_clean_time";
 

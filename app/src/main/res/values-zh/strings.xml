@@ -172,6 +172,14 @@
     <string name="set_ui_reply">快捷回复</string>
     <string name="set_ui_reply_tip">支持部分应用的通知快捷回复。</string>
     <string name="set_ui_permission_set">权限设置</string>
+    <string name="set_ui_keep_alive_set">保活设置</string>
+    <string name="set_ui_cached_apps_guidance">在开发者模式中，找到「暂停执行已缓存的应用」，然后设为「已停用」。</string>
+    <string name="set_ui_listener_status_dot_title">特殊保活</string>
+    <string name="set_ui_listener_status_dot_tip">可选悬浮窗，与通知栏常驻独立。不保证后台运行，也不代表通知正在送达。</string>
+    <string name="set_ui_listener_status_dot_recommendation">建议原点提示，其会在屏幕的最右上角显示小黑点</string>
+    <string name="set_ui_listener_status_dot_transparent">透明显示</string>
+    <string name="set_ui_listener_status_dot_visible">原点显示</string>
+    <string name="set_ui_listener_status_dot_permission_tip">请先授予悬浮窗权限，再开启特殊保活。</string>
     <string name="set_ui_keep_alive_notify_title">通知栏常驻</string>
     <string name="set_ui_keep_alive_notify_tip">开启后会显示一条常驻通知，用于提高后台保活能力。</string>
     <string name="set_ui_notify_title">通知访问权限</string>

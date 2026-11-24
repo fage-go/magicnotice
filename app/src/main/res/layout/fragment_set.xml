@@ -113,50 +113,6 @@
                 android:padding="16dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_keep_alive_notify"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/tv_keep_alive_notify_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/set_ui_keep_alive_notify_title"
-                        android:textColor="@color/base_font_title"
-                        android:textSize="16dp"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Switch
-                        android:id="@+id/switch_keep_alive_notify"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:thumb="@drawable/switch_ios_thumb"
-                        android:track="@drawable/switch_ios_track_selector"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginRight="20dp"
-                        android:text="@string/set_ui_keep_alive_notify_tip"
-                        android:textColor="@color/base_font_txt_sub"
-                        android:textSize="14dp"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_keep_alive_notify_title" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="10dp"
-                    android:background="@color/base_bg_default" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_notify"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -237,13 +193,73 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_float_title" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+            <!--保活设置-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/set_ui_keep_alive_set"
+                android:textColor="@color/base_font_txt"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_content_round"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_keep_alive_notify"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_keep_alive_notify_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/set_ui_keep_alive_notify_title"
+                        android:textColor="@color/base_font_title"
+                        android:textSize="16dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Switch
+                        android:id="@+id/switch_keep_alive_notify"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:thumb="@drawable/switch_ios_thumb"
+                        android:track="@drawable/switch_ios_track_selector"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="20dp"
+                        android:text="@string/set_ui_keep_alive_notify_tip"
+                        android:textColor="@color/base_font_txt_sub"
+                        android:textSize="14dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_keep_alive_notify_title" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginVertical="10dp"
                     android:background="@color/base_bg_default" />
-
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_battery"
@@ -289,7 +305,6 @@
                     android:layout_height="1dp"
                     android:layout_marginVertical="10dp"
                     android:background="@color/base_bg_default" />
-
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_background"
@@ -337,31 +352,57 @@
                     android:background="@color/base_bg_default" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_hide"
+                    android:id="@+id/cl_listener_status_dot"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/tv_hide_title"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tv_listener_status_dot_title"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/set_ui_hide_recent"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintEnd_toStartOf="@id/switch_listener_status_dot"
+                        android:text="@string/set_ui_listener_status_dot_title"
                         android:textColor="@color/base_font_title"
                         android:textSize="16dp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <Switch
-                        android:id="@+id/switch_hide"
+                        android:id="@+id/switch_listener_status_dot"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
+                        android:contentDescription="@string/set_ui_listener_status_dot_title"
                         android:thumb="@drawable/switch_ios_thumb"
                         android:track="@drawable/switch_ios_track_selector"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="20dp"
+                        android:text="@string/set_ui_listener_status_dot_tip"
+                        android:textColor="@color/base_font_txt_sub"
+                        android:textSize="14dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_listener_status_dot_title" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="10dp"
+                    android:background="@color/base_bg_default" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_ui_cached_apps_guidance"
+                    android:textColor="@color/base_font_txt_sub"
+                    android:textSize="14dp" />
 
             </LinearLayout>
 
@@ -471,6 +512,39 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_hide"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_hide_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/set_ui_hide_recent"
+                        android:textColor="@color/base_font_title"
+                        android:textSize="16dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Switch
+                        android:id="@+id/switch_hide"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:thumb="@drawable/switch_ios_thumb"
+                        android:track="@drawable/switch_ios_track_selector"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="10dp"
+                    android:background="@color/base_bg_default" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_freeform"

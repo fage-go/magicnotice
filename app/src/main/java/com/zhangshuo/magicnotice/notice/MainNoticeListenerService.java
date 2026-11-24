@@ -3,6 +3,7 @@ package com.zhangshuo.magicnotice.notice;
 import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +32,8 @@ public class MainNoticeListenerService extends NotificationListenerService {
     private final Runnable drainCommitted = this::dismissCommittedBatch;
     private boolean dismissalScheduled;
     private boolean connected;
+    private boolean destroyed;
+    private ListenerStatusDot statusDot;
     private volatile String zenModePolicyKey = "";
 
     @Override
@@ -164,12 +167,14 @@ public class MainNoticeListenerService extends NotificationListenerService {
     }
 
     private void handleListenerConnected() {
+        if (destroyed) return;
         connected = true;
         clearDismissals();
         zenModePolicyKey = "";
         AppStatusConfig.get().register(this);
         ProcessFactory.get().initProcess();
         NotificationHelper.get().bindListenerService(this);
+        refreshListenerStatusDot();
         LogUtils.i("onListenerConnected " + Thread.currentThread());
 
         StatusBarNotification[] activeNotifications = getActiveNotifications();
@@ -195,6 +200,7 @@ public class MainNoticeListenerService extends NotificationListenerService {
 
     private void handleListenerDisconnected() {
         connected = false;
+        refreshListenerStatusDot();
         clearDismissals();
         zenModePolicyKey = "";
         NotificationHelper.get().unBindListenerService(this);
@@ -208,9 +214,31 @@ public class MainNoticeListenerService extends NotificationListenerService {
         }
     }
 
+    void refreshListenerStatusDot() {
+        onMain(() -> {
+            if (statusDot == null && connected && !destroyed) {
+                try {
+                    statusDot = new ListenerStatusDot(this, main, this::refreshListenerStatusDot);
+                } catch (RuntimeException error) {
+                    LogUtils.w("listener_status_dot setup=" + error.getClass().getSimpleName());
+                    return;
+                }
+            }
+            if (statusDot != null) statusDot.refresh(connected && !destroyed);
+        });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        refreshListenerStatusDot();
+    }
+
     @Override
     public void onDestroy() {
+        destroyed = true;
         connected = false;
+        refreshListenerStatusDot();
         clearDismissals();
         NotificationHelper.get().unBindListenerService(this);
         super.onDestroy();

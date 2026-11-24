@@ -1,6 +1,7 @@
 package com.zhangshuo.magicnotice.ui.fragment;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -37,6 +38,7 @@ import com.zhangshuo.magicnotice.config.RoutePaths;
 import com.zhangshuo.magicnotice.databinding.FragmentSetBinding;
 import com.zhangshuo.magicnotice.db.model.CountInfo;
 import com.zhangshuo.magicnotice.db.service.NotificationDataService;
+import com.zhangshuo.magicnotice.notice.ListenerStatusDotMode;
 import com.zhangshuo.magicnotice.notice.NotificationHelper;
 import com.zhangshuo.magicnotice.ui.MainActivity;
 import com.zhangshuo.magicnotice.ui.dialog.DeleteNoticeDialog;
@@ -50,6 +52,8 @@ import com.zhangshuo.magicnotice.util.ConfigInit;
 
 @Route(path = RoutePaths.APP_FRAGMENT_SET)
 public class SetFragment extends BaseFragment<FragmentSetBinding> {
+    private boolean syncingListenerStatusDotSwitch;
+    private AlertDialog listenerStatusDotDialog;
 
 
     @Override
@@ -142,6 +146,13 @@ public class SetFragment extends BaseFragment<FragmentSetBinding> {
             LocalDataUtil.get().saveData(LocalDataKeys.BKEY_KEEP_ALIVE_NOTIFICATION, enable);
             binding.switchKeepAliveNotify.setChecked(enable);
             NotificationHelper.get().refreshKeepAliveNotification(getCtx());
+        });
+
+        syncListenerStatusDotSwitch();
+        binding.clListenerStatusDot.setOnClickListener(v -> toggleListenerStatusDot());
+        binding.switchListenerStatusDot.setOnCheckedChangeListener((button, checked) -> {
+            // Switch also changes via drag and keyboard, not only clicks.
+            if (!syncingListenerStatusDotSwitch) toggleListenerStatusDot();
         });
 
         binding.clNotify.setOnClickListener(v -> {
@@ -242,6 +253,79 @@ public class SetFragment extends BaseFragment<FragmentSetBinding> {
 
             }
         }, 500);
+    }
+
+    private int listenerStatusDotMode() {
+        return LocalDataUtil.get().getData(
+                LocalDataKeys.IKEY_LISTENER_STATUS_DOT, ListenerStatusDotMode.OFF);
+    }
+
+    private void syncListenerStatusDotSwitch() {
+        syncingListenerStatusDotSwitch = true;
+        try {
+            binding.switchListenerStatusDot.setChecked(
+                    ListenerStatusDotMode.isEnabled(listenerStatusDotMode()));
+        } finally {
+            syncingListenerStatusDotSwitch = false;
+        }
+    }
+
+    private void toggleListenerStatusDot() {
+        // A switch tap may toggle the widget before the click reaches this handler.
+        // Restore the saved state until a user choice has been made.
+        syncListenerStatusDotSwitch();
+        if (ListenerStatusDotMode.isEnabled(listenerStatusDotMode())) {
+            saveListenerStatusDotMode(ListenerStatusDotMode.OFF);
+            return;
+        }
+        if (!Settings.canDrawOverlays(requireContext())) {
+            showListenerStatusDotPermissionTip();
+            return;
+        }
+        if (listenerStatusDotDialog != null) return;
+        listenerStatusDotDialog = new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.set_ui_listener_status_dot_title)
+                .setMessage(R.string.set_ui_listener_status_dot_recommendation)
+                .setNeutralButton(android.R.string.cancel, null)
+                .setNegativeButton(R.string.set_ui_listener_status_dot_transparent,
+                        (dialog, which) -> selectListenerStatusDotMode(ListenerStatusDotMode.TRANSPARENT))
+                .setPositiveButton(R.string.set_ui_listener_status_dot_visible,
+                        (dialog, which) -> selectListenerStatusDotMode(ListenerStatusDotMode.DOT))
+                .create();
+        listenerStatusDotDialog.setOnDismissListener(dialog -> listenerStatusDotDialog = null);
+        listenerStatusDotDialog.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (listenerStatusDotDialog != null) {
+            listenerStatusDotDialog.setOnDismissListener(null);
+            listenerStatusDotDialog.dismiss();
+            listenerStatusDotDialog = null;
+        }
+        super.onDestroyView();
+    }
+
+    private void selectListenerStatusDotMode(int choice) {
+        Context context = getContext();
+        if (context == null || getView() == null) return;
+        int mode = ListenerStatusDotMode.selected(choice, Settings.canDrawOverlays(context));
+        if (mode == ListenerStatusDotMode.OFF) {
+            showListenerStatusDotPermissionTip();
+            return;
+        }
+        saveListenerStatusDotMode(mode);
+    }
+
+    private void saveListenerStatusDotMode(int mode) {
+        LocalDataUtil.get().saveData(LocalDataKeys.IKEY_LISTENER_STATUS_DOT, mode);
+        syncListenerStatusDotSwitch();
+        NotificationHelper.get().refreshListenerStatusDot();
+    }
+
+    private void showListenerStatusDotPermissionTip() {
+        ToastManager.get().noticeShortMessage(
+                getString(R.string.set_ui_listener_status_dot_permission_tip));
     }
 
     public boolean supportFingerprint() {

@@ -172,6 +172,14 @@
     <string name="set_ui_reply">Quick Reply</string>
     <string name="set_ui_reply_tip">Supports quick Reply for some applications。</string>
     <string name="set_ui_permission_set">Permissions</string>
+    <string name="set_ui_keep_alive_set">Keep-alive settings</string>
+    <string name="set_ui_cached_apps_guidance">In Developer options, find “Suspend execution for cached apps” and set it to “Disabled”.</string>
+    <string name="set_ui_listener_status_dot_title">Special keep-alive</string>
+    <string name="set_ui_listener_status_dot_tip">Optional overlay, separate from the persistent notification. It does not guarantee background operation or notification delivery.</string>
+    <string name="set_ui_listener_status_dot_recommendation">Dot display is recommended. It shows a small black dot in the upper-right corner.</string>
+    <string name="set_ui_listener_status_dot_transparent">Transparent display</string>
+    <string name="set_ui_listener_status_dot_visible">Dot display</string>
+    <string name="set_ui_listener_status_dot_permission_tip">Enable Display over other apps first. Then turn on Special keep-alive.</string>
     <string name="set_ui_keep_alive_notify_title">Persistent notification</string>
     <string name="set_ui_keep_alive_notify_tip">Show an ongoing notification to improve background keep-alive.</string>
     <string name="set_ui_notify_title">Notification access</string>
