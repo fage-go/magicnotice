@@ -175,9 +175,12 @@
     <string name="set_ui_keep_alive_set">Keep-alive settings</string>
     <string name="set_ui_cached_apps_guidance">In Developer options, find “Suspend execution for cached apps” and set it to “Disabled”.</string>
     <string name="set_ui_accessibility_settings_title">Accessibility service</string>
-    <string name="set_ui_accessibility_settings_tip">Open Android accessibility settings.</string>
-    <string name="set_ui_accessibility_settings_message">This version does not provide its own accessibility service. You can open Android accessibility settings to see the services on your device.</string>
+    <string name="set_ui_accessibility_settings_tip">Experiment: test background notification stability.</string>
+    <string name="set_ui_accessibility_settings_message">This service tests whether a system binding affects notification stability. It does not guarantee less delay, read the screen, subscribe to accessibility events, or perform input. You control it in Android accessibility settings.</string>
     <string name="set_ui_accessibility_settings_go">Open settings</string>
+    <string name="set_ui_accessibility_settings_manage">Open settings</string>
+    <string name="experimental_accessibility_label">MagicNotice accessibility service (experiment)</string>
+    <string name="experimental_accessibility_description">Tests the effect of a system service binding on background notifications. No screen reading, accessibility events, or input actions.</string>
     <string name="set_ui_accessibility_settings_unavailable">This device could not open accessibility settings.</string>
     <string name="set_ui_listener_status_dot_title">Special keep-alive</string>
     <string name="set_ui_listener_status_dot_tip">Optional overlay, separate from the persistent notification. It does not guarantee background operation or notification delivery.</string>

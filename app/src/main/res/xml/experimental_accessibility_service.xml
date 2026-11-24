@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Accessibility-tool identity defaults to false; no event types or capabilities are requested. -->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:canRetrieveWindowContent="false"
+    android:description="@string/experimental_accessibility_description"
+    android:summary="@string/set_ui_accessibility_settings_tip" />

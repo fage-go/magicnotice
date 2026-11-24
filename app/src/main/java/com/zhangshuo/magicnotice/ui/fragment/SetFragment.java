@@ -1,9 +1,11 @@
 package com.zhangshuo.magicnotice.ui.fragment;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
@@ -13,6 +15,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.CompoundButton;
 
 import androidx.annotation.RequiresApi;
@@ -42,6 +45,7 @@ import com.zhangshuo.magicnotice.db.model.CountInfo;
 import com.zhangshuo.magicnotice.db.service.NotificationDataService;
 import com.zhangshuo.magicnotice.notice.ListenerStatusDotMode;
 import com.zhangshuo.magicnotice.notice.NotificationHelper;
+import com.zhangshuo.magicnotice.service.ExperimentalAccessibilityService;
 import com.zhangshuo.magicnotice.ui.MainActivity;
 import com.zhangshuo.magicnotice.ui.dialog.DeleteNoticeDialog;
 import com.zhangshuo.magicnotice.ui.dialog.ExposeDataDialog;
@@ -59,6 +63,7 @@ import java.util.Collections;
 public class SetFragment extends BaseFragment<FragmentSetBinding>
         implements SpecialKeepAliveDialog.OnConfirm, BottomOptionDialog.OnOptionCallback {
     private boolean syncingListenerStatusDotSwitch;
+    private boolean syncingAccessibilitySwitch;
     private static final String ACCESSIBILITY_SETTINGS_PROMPT = "accessibility_settings_prompt";
     private static final String LISTENER_STATUS_DOT_CHOICES = "listener_status_dot_choices";
 
@@ -155,11 +160,12 @@ public class SetFragment extends BaseFragment<FragmentSetBinding>
             NotificationHelper.get().refreshKeepAliveNotification(getCtx());
         });
 
+        syncAccessibilitySwitch();
         binding.clAccessibilitySettings.setOnClickListener(v -> showAccessibilitySettingsPrompt());
         binding.switchAccessibilitySettings.setOnCheckedChangeListener((button, checked) -> {
-            if (!checked) return;
-            // This entry only opens Settings; MagicNotice has no service to mark as enabled.
-            button.setChecked(false);
+            if (syncingAccessibilitySwitch) return;
+            // The switch reflects only Android's permission, and never modifies it.
+            syncAccessibilitySwitch();
             showAccessibilitySettingsPrompt();
         });
 
@@ -254,6 +260,7 @@ public class SetFragment extends BaseFragment<FragmentSetBinding>
     @Override
     public void onResume() {
         super.onResume();
+        syncAccessibilitySwitch();
         MainHandlerUtil.get().post(new Runnable() {
             @Override
             public void run() {
@@ -270,6 +277,28 @@ public class SetFragment extends BaseFragment<FragmentSetBinding>
         }, 500);
     }
 
+    private boolean isExperimentalAccessibilityEnabled() {
+        Context context = getContext();
+        if (context == null) return false;
+        AccessibilityManager manager = context.getSystemService(AccessibilityManager.class);
+        if (manager == null) return false;
+        ComponentName ours = new ComponentName(context, ExperimentalAccessibilityService.class);
+        for (AccessibilityServiceInfo info :
+                manager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)) {
+            if (ours.equals(ComponentName.unflattenFromString(info.getId()))) return true;
+        }
+        return false;
+    }
+
+    private void syncAccessibilitySwitch() {
+        syncingAccessibilitySwitch = true;
+        try {
+            binding.switchAccessibilitySettings.setChecked(isExperimentalAccessibilityEnabled());
+        } finally {
+            syncingAccessibilitySwitch = false;
+        }
+    }
+
     private void showAccessibilitySettingsPrompt() {
         FragmentManager fragmentManager = getFragmentManager();
         if (fragmentManager == null || fragmentManager.isStateSaved()
@@ -278,7 +307,9 @@ public class SetFragment extends BaseFragment<FragmentSetBinding>
         }
         BottomOptionDialog dialog = BottomOptionDialog.withMessage(
                 getString(R.string.set_ui_accessibility_settings_message),
-                Collections.singletonList(getString(R.string.set_ui_accessibility_settings_go)));
+                Collections.singletonList(getString(isExperimentalAccessibilityEnabled()
+                        ? R.string.set_ui_accessibility_settings_manage
+                        : R.string.set_ui_accessibility_settings_go)));
         dialog.setTargetFragment(this, 0);
         dialog.showNow(fragmentManager, ACCESSIBILITY_SETTINGS_PROMPT);
     }
