@@ -3,6 +3,7 @@ package com.zhangshuo.magicnotice.ui.fragment;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
@@ -21,6 +22,7 @@ import androidx.fragment.app.FragmentManager;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.AppUtils;
 import com.zhangshuo.common.base.BaseFragment;
+import com.zhangshuo.common.dialog.BottomOptionDialog;
 import com.zhangshuo.common.dialog.CommonDialog;
 import com.zhangshuo.common.floatwindow.permission.FloatPermissionManager;
 import com.zhangshuo.common.listener.OnClickCallback;
@@ -51,10 +53,13 @@ import com.zhangshuo.magicnotice.ui.dialog.ShowWXDialog;
 import com.zhangshuo.magicnotice.util.ActivityFreeformUtil;
 import com.zhangshuo.magicnotice.util.ConfigInit;
 
+import java.util.Collections;
+
 @Route(path = RoutePaths.APP_FRAGMENT_SET)
 public class SetFragment extends BaseFragment<FragmentSetBinding>
-        implements SpecialKeepAliveDialog.OnConfirm {
+        implements SpecialKeepAliveDialog.OnConfirm, BottomOptionDialog.OnOptionCallback {
     private boolean syncingListenerStatusDotSwitch;
+    private static final String ACCESSIBILITY_SETTINGS_PROMPT = "accessibility_settings_prompt";
     private static final String LISTENER_STATUS_DOT_CHOICES = "listener_status_dot_choices";
 
 
@@ -148,6 +153,14 @@ public class SetFragment extends BaseFragment<FragmentSetBinding>
             LocalDataUtil.get().saveData(LocalDataKeys.BKEY_KEEP_ALIVE_NOTIFICATION, enable);
             binding.switchKeepAliveNotify.setChecked(enable);
             NotificationHelper.get().refreshKeepAliveNotification(getCtx());
+        });
+
+        binding.clAccessibilitySettings.setOnClickListener(v -> showAccessibilitySettingsPrompt());
+        binding.switchAccessibilitySettings.setOnCheckedChangeListener((button, checked) -> {
+            if (!checked) return;
+            // This entry only opens Settings; MagicNotice has no service to mark as enabled.
+            button.setChecked(false);
+            showAccessibilitySettingsPrompt();
         });
 
         syncListenerStatusDotSwitch();
@@ -255,6 +268,35 @@ public class SetFragment extends BaseFragment<FragmentSetBinding>
 
             }
         }, 500);
+    }
+
+    private void showAccessibilitySettingsPrompt() {
+        FragmentManager fragmentManager = getFragmentManager();
+        if (fragmentManager == null || fragmentManager.isStateSaved()
+                || fragmentManager.findFragmentByTag(ACCESSIBILITY_SETTINGS_PROMPT) != null) {
+            return;
+        }
+        BottomOptionDialog dialog = BottomOptionDialog.withMessage(
+                getString(R.string.set_ui_accessibility_settings_message),
+                Collections.singletonList(getString(R.string.set_ui_accessibility_settings_go)));
+        dialog.setTargetFragment(this, 0);
+        dialog.showNow(fragmentManager, ACCESSIBILITY_SETTINGS_PROMPT);
+    }
+
+    @Override
+    public void onClick(int position) {
+        if (position != 0 || !isAdded()) return;
+        try {
+            startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+        } catch (ActivityNotFoundException | SecurityException error) {
+            ToastManager.get().noticeShortMessage(
+                    getString(R.string.set_ui_accessibility_settings_unavailable));
+        }
+    }
+
+    @Override
+    public void onCancel() {
+        // Dismissal must not launch Android Settings.
     }
 
     private int listenerStatusDotMode() {
