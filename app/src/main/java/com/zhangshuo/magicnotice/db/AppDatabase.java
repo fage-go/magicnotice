@@ -27,7 +27,7 @@ import com.zhangshuo.magicnotice.db.model.TxtData;
 
 @Database(entities = {NotificationData.class, ConfigRuleData.class, GlobalConfigData.class, TabData.class,
         SchedulerData.class, SchedulerRecordData.class, TxtData.class, TxtClassifyData.class, RemindData.class},
-        version = 20, exportSchema = false)
+        version = 21, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract NotificationDataDao notificationDataDao();
@@ -175,6 +175,13 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_20_21 = new Migration(20, 21) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE ConfigRuleData ADD COLUMN backupAppend INTEGER NOT NULL DEFAULT 0");
+        }
+    };
+
     //
     /// 单例模式获取
     private static final String DB_NAME = "magic_data.db";
@@ -205,6 +212,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 .addMigrations(MIGRATION_17_18)
                 .addMigrations(MIGRATION_18_19)
                 .addMigrations(MIGRATION_19_20)
+                .addMigrations(MIGRATION_20_21)
                 .build();
     }
 

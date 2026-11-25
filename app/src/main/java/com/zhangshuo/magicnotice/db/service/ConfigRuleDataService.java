@@ -2,6 +2,8 @@ package com.zhangshuo.magicnotice.db.service;
 
 import android.text.TextUtils;
 
+import com.zhangshuo.magicnotice.backup.RuleBackup;
+
 import com.zhangshuo.common.util.AsyncCallUtils;
 import com.zhangshuo.common.util.AsyncCallback;
 import com.zhangshuo.common.util.LocalDataUtil;
@@ -17,6 +19,8 @@ import com.zhangshuo.magicnotice.ui.model.ConfigRuleModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 public class ConfigRuleDataService {
@@ -138,9 +142,50 @@ public class ConfigRuleDataService {
                     }
                 }
                 return RuleOrdering.displayed(rules, ConfigRuleModel::isOpen, ConfigRuleModel::getId,
+                        ConfigRuleModel::isBackupAppend,
                         LocalDataUtil.get().getData(LocalDataKeys.SKEY_SORT_IDS, ""));
             }
         }, callback);
+    }
+
+    /** Export selected rules in the same order as the visible rule list. */
+    public static byte[] exportRuleBackup(List<Integer> selectedIds) throws RuleBackup.Invalid {
+        ConfigRuleDataDao dao = AppDatabase.getInstance().configRuleDataDao();
+        List<ConfigRuleData> rules = RuleOrdering.displayed(dao.findDataList(), ConfigRuleData::isOpen,
+                ConfigRuleData::getId, ConfigRuleData::isBackupAppend,
+                LocalDataUtil.get().getData(LocalDataKeys.SKEY_SORT_IDS, ""));
+        Set<Integer> wanted = new HashSet<>(selectedIds);
+        List<RuleBackup.Rule> entries = new ArrayList<>();
+        for (ConfigRuleData row : rules) {
+            if (wanted.remove(row.getId())) {
+                entries.add(new RuleBackup.Rule(row.getName(), row.getConditionList(), row.getBehaviorList(),
+                        row.isOpen(), row.isRetain(), row.isCollect(), row.isPolicy(),
+                        row.getTagColor(), row.getCleanTime()));
+            }
+        }
+        // A concurrent delete must not silently produce a partial backup.
+        if (!wanted.isEmpty()) throw new IllegalStateException("Selected rule no longer exists");
+        return RuleBackup.encode(entries);
+    }
+
+    /** Builds new stored rows only, so neither rules nor any notification can be overwritten. */
+    public static void importRuleBackup(List<RuleBackup.Rule> rules) {
+        List<ConfigRuleData> entries = new ArrayList<>(rules.size());
+        for (RuleBackup.Rule rule : rules) {
+            ConfigRuleData entry = new ConfigRuleData();
+            entry.setName(rule.name);
+            entry.setConditionList(rule.conditions);
+            entry.setBehaviorList(rule.behaviors);
+            entry.setOpen(false);
+            entry.setRetain(rule.retain);
+            entry.setCollect(rule.collect);
+            entry.setPolicy(rule.policy);
+            entry.setTagColor(rule.tagColor);
+            entry.setCleanTime(rule.cleanTime);
+            entry.setBackupAppend(true);
+            entries.add(entry);
+        }
+        AppDatabase.getInstance().configRuleDataDao().insertBackup(entries);
     }
 
     public static void countNotificationByRuleId(int ruleId, AsyncCallback<Integer> callback) {

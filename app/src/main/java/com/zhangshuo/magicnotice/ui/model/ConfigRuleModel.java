@@ -10,6 +10,7 @@ import java.util.List;
 public class ConfigRuleModel {
     //id
     private int id;
+    private boolean backupAppend;
     //名称
     private String ruleName;
     //条件类别
@@ -40,6 +41,7 @@ public class ConfigRuleModel {
 
     public ConfigRuleModel(ConfigRuleData data) {
         this.id = data.getId();
+        this.backupAppend = data.isBackupAppend();
         this.ruleName = data.getName();
         this.conditionList = ConditionsModel.convert(data.getConditionList());
         this.behaviorList = BehaviorModel.convert(data.getBehaviorList());
@@ -56,6 +58,7 @@ public class ConfigRuleModel {
     public ConfigRuleModel copyModel() {
         ConfigRuleModel configRuleModel = new ConfigRuleModel();
         configRuleModel.id = id;
+        configRuleModel.backupAppend = backupAppend;
         configRuleModel.ruleName = ruleName;
         configRuleModel.conditionList = conditionList;
         configRuleModel.behaviorList = behaviorList;
@@ -70,6 +73,8 @@ public class ConfigRuleModel {
         configRuleModel.cleanTime = cleanTime;
         return configRuleModel;
     }
+
+    public boolean isBackupAppend() { return backupAppend; }
 
     public int getId() {
         return id;

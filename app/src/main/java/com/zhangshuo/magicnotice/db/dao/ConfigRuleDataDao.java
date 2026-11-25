@@ -15,6 +15,10 @@ public interface ConfigRuleDataDao {
     @Insert
     long insert(ConfigRuleData configRuleData);
 
+    // Room runs the whole list insert in a single transaction; conflicts abort.
+    @Insert
+    void insertBackup(List<ConfigRuleData> entries);
+
     @Update
     void update(ConfigRuleData configRuleData);
 

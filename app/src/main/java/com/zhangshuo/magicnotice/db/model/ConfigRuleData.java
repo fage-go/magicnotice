@@ -1,5 +1,6 @@
 package com.zhangshuo.magicnotice.db.model;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -20,6 +21,8 @@ public class ConfigRuleData {
     private String tagColor;
     private String cleanTime = "0";
     private String extraConfig;
+    @ColumnInfo(defaultValue = "0")
+    private boolean backupAppend;
 
     public ConfigRuleData() {
     }
@@ -27,6 +30,7 @@ public class ConfigRuleData {
     public ConfigRuleData(ConfigRuleModel configRuleModel) {
         if (configRuleModel.getId() > 0) {
             id = configRuleModel.getId();
+            backupAppend = configRuleModel.isBackupAppend();
         }
         name = configRuleModel.getRuleName();
         conditionList = GsonUtils.toString(configRuleModel.getConditionList());
@@ -39,6 +43,10 @@ public class ConfigRuleData {
         tagColor = configRuleModel.getTagColor();
         cleanTime = configRuleModel.getCleanTime();
     }
+
+    public boolean isBackupAppend() { return backupAppend; }
+
+    public void setBackupAppend(boolean backupAppend) { this.backupAppend = backupAppend; }
 
     public int getId() {
         return id;

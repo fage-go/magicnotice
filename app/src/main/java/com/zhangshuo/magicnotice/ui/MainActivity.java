@@ -4,12 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -286,17 +284,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
                         .scaleYBy(0f)
                         .scaleY(1f)
                         .start();
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data != null && resultCode == RESULT_OK) {
-            Uri uri = data.getData();
-            if (uri != null) {
-                EventBusUtil.sendEvent(new EventMessage<>(EventCodes.FILE_SELECT, uri));
             }
         }
     }

@@ -27,6 +27,9 @@ public class SelectRuleDialog extends BaseBottomSheetDialog<DialogSelectRuleBind
     private RuleSelectedAdapter adapter;
     private List<Integer> selectedIdList = new ArrayList<>();
     private boolean isSingle = true;
+    private boolean backupSelection;
+
+    public void setBackupSelection() { backupSelection = true; }
 
     private SelectedListHelper<ConfigRuleModel> selectedListHelper;
     public SelectRuleDialog() {
@@ -130,6 +133,7 @@ public class SelectRuleDialog extends BaseBottomSheetDialog<DialogSelectRuleBind
                 }
             }
         });
+        if (backupSelection) binding.tvAll.setVisibility(View.GONE);
         getData(null);
     }
 
@@ -154,7 +158,7 @@ public class SelectRuleDialog extends BaseBottomSheetDialog<DialogSelectRuleBind
                 ConfigRuleModel configRuleModel = new ConfigRuleModel();
                 configRuleModel.setRuleName(getString(R.string.no_hit_name));
                 configRuleModel.setId(0);
-                result.add(configRuleModel);
+                if (!backupSelection) result.add(configRuleModel);
                 for (int i = 0; i < result.size(); i++) {
                     for (int targetId : selectedIdList) {
                         if (targetId == result.get(i).getId()) {
