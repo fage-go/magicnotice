@@ -84,7 +84,7 @@ public final class RuleBackup {
             row.addProperty("collect", rule.collect);
             row.addProperty("policy", rule.policy);
             row.addProperty("tagColor", rule.tagColor == null ? "" : rule.tagColor);
-            row.addProperty("cleanTime", rule.cleanTime == null ? "0" : rule.cleanTime);
+            row.addProperty("cleanTime", rule.cleanTime == null || rule.cleanTime.isEmpty() ? "0" : rule.cleanTime);
             validateRule(row);
             approxBytes += row.toString().getBytes(StandardCharsets.UTF_8).length;
             if (approxBytes > MAX_BYTES) throw new Invalid(Failure.TOO_LARGE);
@@ -179,7 +179,7 @@ public final class RuleBackup {
     }
 
     private static void payload(JsonObject object, String required, String optional) throws Invalid {
-        for (String key : required.split(" ")) require(object.has(key));
+        if (!required.isEmpty()) for (String key : required.split(" ")) require(object.has(key));
         for (Map.Entry<String, JsonElement> field : object.entrySet()) {
             String key = field.getKey();
             if ((" " + required + " ").contains(" " + key + " ") && !key.contains(" ")) continue;
@@ -197,11 +197,21 @@ public final class RuleBackup {
                     break;
                 case 'C': if (!value.isJsonNull()) { String c = string(value); require(c.isEmpty() || color(c)); } break;
                 case 'B': bool(value); break;
-                case 'L': integer(value, 0, Long.MAX_VALUE); break;
-                case 'N': integer(value, 0, "count".equals(key) || "repeatCount".equals(key) ? 100 : 1000000); break;
-                case 'F': require(number(value).abs().compareTo(BigDecimal.valueOf(10000)) <= 0); break;
+                case 'L':
+                    long time = integer(value, 0, 2359);
+                    require(time % 100 < 60);
+                    break;
+                case 'N': integer(value, 0, maxInteger(key)); break;
+                case 'F':
+                    BigDecimal num = number(value);
+                    int max = key.endsWith("Alpha") ? 1 : ("speed".equals(key) ? 10 : 200);
+                    require(num.signum() >= 0 && num.compareTo(BigDecimal.valueOf(max)) <= 0);
+                    break;
                 case 'T':
                     for (JsonElement item : array(value, MAX_ARRAY)) {
+                        // A built-in SMS sample can contain a null fallback package on a
+                        // device without a default SMS app. No other string arrays accept null.
+                        if ("packageNameList".equals(key) && item.isJsonNull()) continue;
                         String text = string(item);
                         if ("txtList".equals(key) && text.contains("-") && text.contains("*")
                                 && text.contains(":")) {
@@ -212,13 +222,26 @@ public final class RuleBackup {
                 case 'H': case 'P':
                     for (JsonElement item : array(value, MAX_ARRAY)) {
                         JsonObject nested = object(item);
-                        payload(nested, "name", fieldType == 'H' ? "S:value B:selected" : "S:phone");
-                        string(nested.get("name"));
+                        payload(nested, "", fieldType == 'H' ? "S:name S:value B:selected" : "S:name S:phone");
                         string(nested.get(fieldType == 'H' ? "value" : "phone"));
                     }
                     break;
                 default: throw new Invalid(Failure.INVALID);
             }
+        }
+    }
+
+    private static int maxInteger(String key) {
+        switch (key) {
+            case "count": case "repeatCount": case "volume": return 100;
+            case "contentType": return 7; // Three bit flags in both barrage and TTS.
+            case "viewType": case "showType": return 3;
+            case "animType": case "bgType": return 4;
+            case "enterEffectType": case "exitEffectType":
+            case "clickType": case "doubleClickType": return 4;
+            case "txtSizeSP": case "strokeWidth": case "bgRadius": case "speed": return 256;
+            case "stayEffectTime": case "showTime": return 86_400_000;
+            default: throw new IllegalArgumentException("Unexpected rule backup field");
         }
     }
 

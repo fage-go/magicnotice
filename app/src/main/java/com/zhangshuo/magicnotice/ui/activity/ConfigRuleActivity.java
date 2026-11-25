@@ -238,7 +238,11 @@ public class ConfigRuleActivity extends BaseActivity<ActivityConfigRuleBinding>
         if (configRuleModel == null) {
             configRuleModel = new ConfigRuleModel();
         }
-        configRuleModel.setOpen(true);
+        // Restored rules require a separate, explicit action on the rule-list switch.
+        // Editing to review their contents must never activate them.
+        if (configRuleModel.getId() <= 0 || !configRuleModel.isBackupAppend()) {
+            configRuleModel.setOpen(true);
+        }
         configRuleModel.setTagColor(selectTagColor);
         configRuleModel.setRetain(binding.switchRetain.isChecked());
         configRuleModel.setPolicy(binding.switchPolicy.isChecked());
