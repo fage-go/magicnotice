@@ -133,7 +133,8 @@ public class SelectRuleDialog extends BaseBottomSheetDialog<DialogSelectRuleBind
                 }
             }
         });
-        if (backupSelection) binding.tvAll.setVisibility(View.GONE);
+        // The search area is constrained below this view; keep its header space.
+        if (backupSelection) binding.tvAll.setVisibility(View.INVISIBLE);
         getData(null);
     }
 
