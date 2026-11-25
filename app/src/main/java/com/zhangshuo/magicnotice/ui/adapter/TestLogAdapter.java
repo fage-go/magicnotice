@@ -82,7 +82,8 @@ public class TestLogAdapter extends BaseRAdapter<RuleEvaluation.Row<ConfigRuleMo
                     ? R.string.rule_test_possible_dnd : R.string.rule_test_possible_reason);
             case CONDITIONAL_MATCH: return getContext().getString(R.string.rule_test_conditional_reason);
             case MATCH: return getContext().getString(R.string.rule_test_match_reason);
-            case NOT_CHECKED: return getContext().getString(R.string.rule_test_unchecked_reason);
+            case NOT_CHECKED: return getContext().getString(row.rule.isOpen()
+                    ? R.string.rule_test_unchecked_reason : R.string.rule_test_unchecked_disabled_reason);
             default: return getContext().getString(R.string.test_log_no_hit_tip);
         }
     }

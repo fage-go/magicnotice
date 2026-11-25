@@ -9,6 +9,7 @@ import com.zhangshuo.common.util.StringUtil;
 import com.zhangshuo.magicnotice.R;
 import com.zhangshuo.magicnotice.config.LocalDataKeys;
 import com.zhangshuo.magicnotice.db.AppDatabase;
+import com.zhangshuo.magicnotice.db.dao.ConfigRuleDataDao;
 import com.zhangshuo.magicnotice.db.model.ConfigRuleData;
 import com.zhangshuo.magicnotice.ui.model.ConfigRuleModel;
 
@@ -114,35 +115,31 @@ public class ConfigRuleDataService {
     }
 
     public static void findConfigRuleInfoList(AsyncCallback<List<ConfigRuleModel>> callback) {
+        findDisplayedRules(true, callback);
+    }
+
+    /** The visible/current rule order without UI-only hit counts. */
+    public static void findConfigRuleEvaluationList(AsyncCallback<List<ConfigRuleModel>> callback) {
+        findDisplayedRules(false, callback);
+    }
+
+    private static void findDisplayedRules(boolean includeCounts, AsyncCallback<List<ConfigRuleModel>> callback) {
         AsyncCallUtils.asyncCall(new Callable<List<ConfigRuleModel>>() {
-            @Override
-            public List<ConfigRuleModel> call() throws Exception {
-                List<ConfigRuleData> dataList = AppDatabase.getInstance().configRuleDataDao().findDataList();
-                List<ConfigRuleModel> configRuleModelList = new ArrayList<>();
-                if (dataList != null) {
-                    for (int i = 0; i < dataList.size(); i++) {
-                        ConfigRuleData configRuleData = dataList.get(i);
-                        if (configRuleData.isOpen()) {
-                            ConfigRuleModel configRuleModel = new ConfigRuleModel(configRuleData);
-                            int countNotify = AppDatabase.getInstance().configRuleDataDao().queryNotificationByRuleId(configRuleData.getId());
-                            configRuleModel.setFilterCount(countNotify);
-                            configRuleModelList.add(configRuleModel);
-                            dataList.remove(i);
-                            i--;
-                        }
+            @Override public List<ConfigRuleModel> call() {
+                ConfigRuleDataDao dao = AppDatabase.getInstance().configRuleDataDao();
+                List<ConfigRuleData> data = dao.findDataList();
+                List<ConfigRuleModel> rules = new ArrayList<>();
+                List<ConfigRuleModel> disabled = new ArrayList<>();
+                if (data != null) {
+                    for (ConfigRuleData entry : data) {
+                        ConfigRuleModel model = new ConfigRuleModel(entry);
+                        if (includeCounts) model.setFilterCount(dao.queryNotificationByRuleId(entry.getId()));
+                        (entry.isOpen() ? rules : disabled).add(model);
                     }
-                    for (int i = 0; i < dataList.size(); i++) {
-                        ConfigRuleData configRuleData = dataList.get(i);
-                        if (!configRuleData.isOpen()) {
-                            ConfigRuleModel configRuleModel = new ConfigRuleModel(configRuleData);
-                            int countNotify = AppDatabase.getInstance().configRuleDataDao().queryNotificationByRuleId(configRuleData.getId());
-                            configRuleModel.setFilterCount(countNotify);
-                            configRuleModelList.add(configRuleModel);
-                        }
-                    }
-                    sortConfigRule(configRuleModelList);
                 }
-                return configRuleModelList;
+                rules.addAll(disabled);
+                sortConfigRule(rules);
+                return rules;
             }
         }, callback);
     }

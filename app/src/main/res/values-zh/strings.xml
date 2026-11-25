@@ -777,4 +777,5 @@
     <string name="rule_test_possible">待确认</string>
     <string name="rule_test_conditional">候选命中</string>
     <string name="rule_test_unchecked">未检查</string>
+    <string name="rule_test_unchecked_disabled_reason">前面已有满足条件的规则；此条未检查，开关也未开启。</string>
 </resources>

@@ -777,4 +777,5 @@
     <string name="rule_test_possible">Uncertain</string>
     <string name="rule_test_conditional">Conditional match</string>
     <string name="rule_test_unchecked">Not checked</string>
+    <string name="rule_test_unchecked_disabled_reason">An earlier rule matches. This rule was not checked and is switched off.</string>
 </resources>

@@ -118,7 +118,7 @@ public class TestConfigActivity extends BaseActivity<ActivityConfigTestBinding> 
         binding.tvTestResult.setVisibility(View.VISIBLE);
         binding.tvTestResult.setText(R.string.test_config_testing);
         testLogAdapter.showResult(new ArrayList<>(), ruleId);
-        ConfigRuleDataService.findConfigRuleList(new AsyncCallback<List<ConfigRuleModel>>() {
+        ConfigRuleDataService.findConfigRuleEvaluationList(new AsyncCallback<List<ConfigRuleModel>>() {
             @Override public void onSuccess(List<ConfigRuleModel> rules) {
                 if (isFinishing() || isDestroyed() || generation != testGeneration || revision != formRevision) return;
                 try {

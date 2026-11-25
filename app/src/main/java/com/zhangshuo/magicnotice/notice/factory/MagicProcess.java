@@ -41,7 +41,7 @@ public class MagicProcess {
 
     public void refreshConfigRule() {
         final int generation = rules.begin();
-        ConfigRuleDataService.findConfigRuleList(new AsyncCallback<List<ConfigRuleModel>>() {
+        ConfigRuleDataService.findConfigRuleEvaluationList(new AsyncCallback<List<ConfigRuleModel>>() {
             @Override
             public void onSuccess(List<ConfigRuleModel> result) {
                 if (!rules.finish(generation, true)) return;
