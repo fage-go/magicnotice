@@ -16,7 +16,6 @@ import com.zhangshuo.magicnotice.db.service.TabDataService;
 import com.zhangshuo.magicnotice.notice.NotificationHelper;
 import com.zhangshuo.magicnotice.notice.model.NotificationInfo;
 import com.zhangshuo.magicnotice.ui.model.BehaviorModel;
-import com.zhangshuo.magicnotice.ui.model.ConditionsModel;
 import com.zhangshuo.magicnotice.ui.model.ConfigRuleModel;
 import com.zhangshuo.magicnotice.ui.model.TabInfo;
 
@@ -162,41 +161,7 @@ public class MagicProcess {
     }
 
     private ConfigRuleModel checkFitStatus(NotificationInfo notificationInfo) {
-        ConfigRuleModel resultModel = null;
-        if (openConfigRuleModelList.size() > 0) {
-            for (ConfigRuleModel configRuleModel : openConfigRuleModelList) {
-                //判断免打扰
-                if (configRuleModel.isPolicy() && NotificationHelper.get().isZenModePolicy()) {
-                    //如果当前的规则需要免打扰，并且当前时免打扰状态下，则忽略判断
-                    continue;
-                }
-                List<ConditionsModel> conditionList = configRuleModel.getConditionList();
-                if (conditionList != null && conditionList.size() > 0) {
-                    boolean haveHitAll = true;
-                    for (int i = 0; i < conditionList.size(); i++) {
-                        ConditionsModel conditionsModel = conditionList.get(i);
-//                        long filterTime = System.currentTimeMillis();
-                        boolean filter = conditionsModel.isFilter(notificationInfo);
-//                        LogUtils.i(conditionsModel.getClass().getSimpleName() + ">>>"
-//                                + (System.currentTimeMillis() - filterTime));
-                        if (!filter) {
-                            haveHitAll = false;
-                            break;
-                        }
-                    }
-                    if (haveHitAll) {
-                        resultModel = configRuleModel;
-                        break;
-                    }
-                } else {
-                    //没有条件的情况，则全部拦截
-                    resultModel = configRuleModel;
-                    break;
-                }
-            }
-        }
-        return resultModel;
+        return RuleEvaluation.evaluate(openConfigRuleModelList,
+                new NotificationRuleInputs(notificationInfo, false), false).winner;
     }
-
-
 }

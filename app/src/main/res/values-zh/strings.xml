@@ -751,4 +751,30 @@
     <string name="config_rule_lock">自动收藏</string>
 
     <string name="legacy_rule_exchange_unavailable">此版本未配置旧版规则导入和导出功能。</string>
+    <string name="rule_test_winner">最终命中：%1$s</string>
+    <string name="rule_test_uncertain">无法确定最终命中：「%1$s」可能命中。</string>
+    <string name="rule_test_uncertain_fallback">无法确定最终命中：「%1$s」可能命中；若前面的待确认规则都不命中，则命中「%2$s」。</string>
+    <string name="rule_test_error">规则测试失败，请重试。</string>
+    <string name="rule_test_manual">手动输入 · 采用当前设备状态</string>
+    <string name="rule_test_history">历史通知 · 当时的设备状态未保存</string>
+    <string name="rule_test_selected">查看「%1$s」在全列表中的命中情况</string>
+    <string name="rule_test_row_selected">%1$d. %2$s（所选规则）</string>
+    <string name="rule_test_row">%1$d. %2$s</string>
+    <string name="rule_test_expand">展开条件</string>
+    <string name="rule_test_collapse">收起条件</string>
+    <string name="rule_test_unknown">未知</string>
+    <string name="rule_test_condition_line">%1$s：%2$s</string>
+    <string name="rule_test_failed_reason">「%1$s」条件不满足。</string>
+    <string name="rule_test_disabled_reason">规则开关未开启。</string>
+    <string name="rule_test_dnd_reason">当前处于免打扰，规则已跳过。</string>
+    <string name="rule_test_possible_dnd">历史免打扰状态未知，无法确认是否跳过。</string>
+    <string name="rule_test_possible_reason">历史设备状态缺失，无法确认是否满足。</string>
+    <string name="rule_test_conditional_reason">自身条件满足，但前面有待确认的规则。</string>
+    <string name="rule_test_match_reason">本条为最先满足所有条件的已启用规则。</string>
+    <string name="rule_test_unchecked_reason">前面已有一条满足条件的规则，此条未检查。</string>
+    <string name="rule_test_disabled">已关闭</string>
+    <string name="rule_test_dnd">免打扰跳过</string>
+    <string name="rule_test_possible">待确认</string>
+    <string name="rule_test_conditional">候选命中</string>
+    <string name="rule_test_unchecked">未检查</string>
 </resources>
