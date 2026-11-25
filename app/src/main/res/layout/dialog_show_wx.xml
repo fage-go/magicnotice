@@ -33,7 +33,9 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginTop="10dp"
-        android:background="@mipmap/ic_wx_follow_img" />
+        android:contentDescription="@string/show_wx_qr_description"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_wx_follow_img" />
 
     <TextView
         android:id="@+id/tv_save_img"
@@ -50,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:text="@string/show_wx_content_tip"
+        android:id="@+id/tvFollowInstructions"
         android:textColor="@color/base_font_hint"
         android:textSize="14dp" />
 

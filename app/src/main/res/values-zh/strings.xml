@@ -390,9 +390,9 @@
     <string name="save_picture_title">通知留影</string>
     <string name="save_picture_mode">深色模式</string>
     <string name="save_picture_app_name">名称</string>
-    <string name="show_wx_tip">关注 通知了 微信公众号</string>
+    <string name="show_wx_tip">关注微信公众号</string>
     <string name="show_wx_tip_download">下载二维码</string>
-    <string name="show_wx_content_tip">搜索 “通知了” 选择公众号\n关注公众号</string>
+    <string name="show_wx_content_tip">在微信搜索「%1$s」\n关注公众号</string>
     <string name="show_wx_copy">复制公众号并跳转</string>
     <string name="show_email_tip">联系我们</string>
     <string name="show_email_title">邮件标题</string>

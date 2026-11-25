@@ -390,9 +390,11 @@
     <string name="save_picture_title">Save Shadow</string>
     <string name="save_picture_mode">Dark Mode</string>
     <string name="save_picture_app_name">Name</string>
-    <string name="show_wx_tip">关注 通知了 微信公众号</string>
+    <string name="show_wx_tip">关注微信公众号</string>
+    <string name="show_wx_account_name" translatable="false">发哥聊一聊AI</string>
+    <string name="show_wx_qr_description">@string/show_wx_account_name</string>
     <string name="show_wx_tip_download">下载二维码</string>
-    <string name="show_wx_content_tip">搜索 “通知了” 选择公众号\n关注公众号</string>
+    <string name="show_wx_content_tip">在微信搜索「%1$s」\n关注公众号</string>
     <string name="show_wx_copy">复制公众号并跳转</string>
     <string name="show_email_tip">Contact Us</string>
     <string name="show_email_title">Email Title</string>

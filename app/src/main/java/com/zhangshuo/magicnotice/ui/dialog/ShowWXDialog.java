@@ -33,6 +33,8 @@ public class ShowWXDialog extends BaseBottomDialog<DialogShowWxBinding> {
 
     @Override
     public void initView() {
+        binding.tvFollowInstructions.setText(getContext().getString(
+                R.string.show_wx_content_tip, getContext().getString(R.string.show_wx_account_name)));
         binding.ivSaveImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,7 +66,7 @@ public class ShowWXDialog extends BaseBottomDialog<DialogShowWxBinding> {
         AsyncCallUtils.asyncCall(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                Bitmap bitmap = ImageUtils.drawable2Bitmap(ResourceUtils.getDrawable(R.mipmap.ic_wx_follow_img));
+                Bitmap bitmap = ImageUtils.drawable2Bitmap(ResourceUtils.getDrawable(R.drawable.ic_wx_follow_img));
                 File saveFile = ImageUtils.save2Album(bitmap, StringUtil.getString(R.string.app_name), Bitmap.CompressFormat.PNG);
                 if (saveFile != null) {
                     return saveFile.getAbsolutePath();
@@ -86,7 +88,7 @@ public class ShowWXDialog extends BaseBottomDialog<DialogShowWxBinding> {
 
     private void copyAndOpen() {
         ClipboardManager tvCopy = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        tvCopy.setText(StringUtil.getString(R.string.app_name));
+        tvCopy.setText(StringUtil.getString(R.string.show_wx_account_name));
         ToastManager.get().showShortToast(R.string.show_wx_copyed_name);
         try {
             Intent intent = new Intent(Intent.ACTION_MAIN);
