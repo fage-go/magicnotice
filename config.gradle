@@ -15,8 +15,8 @@ ext {
             minSdkVersion    : 23,
             targetSdkVersion : 30,
             buildToolsVersion: '30.0.2',
-            versionCode      : 1710,
-            versionName      : 'Cicada 1.7.1'
+            versionCode      : 1720,
+            versionName      : 'Cicada 1.7.2'
     ]
 
     // 三方依赖
