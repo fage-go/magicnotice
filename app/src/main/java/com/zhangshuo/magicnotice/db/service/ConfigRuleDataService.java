@@ -10,6 +10,7 @@ import com.zhangshuo.magicnotice.R;
 import com.zhangshuo.magicnotice.config.LocalDataKeys;
 import com.zhangshuo.magicnotice.db.AppDatabase;
 import com.zhangshuo.magicnotice.db.dao.ConfigRuleDataDao;
+import com.zhangshuo.magicnotice.notice.factory.RuleOrdering;
 import com.zhangshuo.magicnotice.db.model.ConfigRuleData;
 import com.zhangshuo.magicnotice.ui.model.ConfigRuleModel;
 
@@ -129,17 +130,15 @@ public class ConfigRuleDataService {
                 ConfigRuleDataDao dao = AppDatabase.getInstance().configRuleDataDao();
                 List<ConfigRuleData> data = dao.findDataList();
                 List<ConfigRuleModel> rules = new ArrayList<>();
-                List<ConfigRuleModel> disabled = new ArrayList<>();
                 if (data != null) {
                     for (ConfigRuleData entry : data) {
                         ConfigRuleModel model = new ConfigRuleModel(entry);
                         if (includeCounts) model.setFilterCount(dao.queryNotificationByRuleId(entry.getId()));
-                        (entry.isOpen() ? rules : disabled).add(model);
+                        rules.add(model);
                     }
                 }
-                rules.addAll(disabled);
-                sortConfigRule(rules);
-                return rules;
+                return RuleOrdering.displayed(rules, ConfigRuleModel::isOpen, ConfigRuleModel::getId,
+                        LocalDataUtil.get().getData(LocalDataKeys.SKEY_SORT_IDS, ""));
             }
         }, callback);
     }

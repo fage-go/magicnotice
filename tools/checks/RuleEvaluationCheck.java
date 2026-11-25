@@ -47,6 +47,15 @@ public final class RuleEvaluationCheck {
         check(r.winner == null && r.firstPossible != null && r.conditionalWinner == null);
         r = RuleEvaluation.evaluate(Arrays.asList(no, new Rule(true, false)), new Fixture(NO), true);
         check(r.winner != null && r.rows.get(1).status == MATCH);
+        // A partial saved order was previously applied after different initial groupings.
+        // This is a regression example where identical rules had different live and displayed precedence.
+        List<Integer> raw = Arrays.asList(100, 1, 2, 3);
+        List<Integer> displayed = RuleOrdering.displayed(raw, id -> id != 100, id -> id, "3;");
+        check(displayed.equals(Arrays.asList(3, 2, 1, 100)));
+        check(RuleOrdering.displayed(raw, id -> id != 100, id -> id, "")
+                .equals(Arrays.asList(1, 2, 3, 100)));
+        check(RuleOrdering.displayed(raw, id -> id != 100, id -> id, "3;bad;3;")
+                .equals(displayed));
         System.out.println("RuleEvaluationCheck passed");
     }
 }
