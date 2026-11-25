@@ -777,4 +777,15 @@
     <string name="rule_test_conditional">Conditional match</string>
     <string name="rule_test_unchecked">Not checked</string>
     <string name="rule_test_unchecked_disabled_reason">An earlier rule matches. This rule was not checked and is switched off.</string>
+    <string name="rule_backup_choose_rules">Select at least one rule.</string>
+    <string name="rule_backup_plaintext">This backup includes only the selected rules, not notification history. It is not encrypted and may include contact numbers, keywords, or action settings. Keep it private.</string>
+    <string name="rule_backup_export_failed">Could not save the rule backup. Try exporting again.</string>
+    <string name="rule_backup_picker_failed">Could not open the system file picker.</string>
+    <string name="rule_backup_export_done">Rule backup saved.</string>
+    <string name="rule_backup_old_file">This is an older .cicada backup, not a new rule backup. It cannot be imported here.</string>
+    <string name="rule_backup_confirm">Append %1$d rules without replacing existing ones? Imported rules start off. Review their conditions and actions, then turn them on manually in the rule list.</string>
+    <string name="rule_backup_invalid">The rule file is invalid, damaged, or unreadable. Nothing was imported.</string>
+    <string name="rule_backup_unsupported">This backup format or version is not supported. Nothing was imported.</string>
+    <string name="rule_backup_too_large">The file or its contents exceed the rule backup limits.</string>
+    <string name="rule_backup_import_done">Rules were added and are off by default.</string>
 </resources>

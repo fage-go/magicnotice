@@ -12,7 +12,13 @@ bash ./gradlew :app:assembleZhRelease :app:assembleEnRelease
 
 不要设置 `MAGICNOTICE_KEYSTORE`、`MAGICNOTICE_STORE_PASSWORD`、`MAGICNOTICE_KEY_ALIAS` 或 `MAGICNOTICE_KEY_PASSWORD`，即可生成未签名的 Release APK。GitHub Actions 会核验 APK 未签名，再将中英文版本分别保存为构建产物，不会自动发布 GitHub Release。未签名 APK 需要自行签名后才能安装。
 
-公开构建默认不读取或生成旧版加密规则文件。仅对受信任的私有构建，维护者可以同时提供与旧版对应的 `MAGICNOTICE_LEGACY_EXPORT_KEY` 和 `MAGICNOTICE_LEGACY_EXPORT_IV` 以兼容旧版规则文件。不要把这些值写入仓库、公开 CI 或公开分发含有这些值的构建。旧版 DES 仅为兼容原有文件，不应用于保护新数据。仓库不含发布密钥或签名密码。
+仓库不含发布密钥或签名密码。
+
+## 规则备份
+
+打开「设置 → 导入/导出数据」，可通过系统文件选择器保存或选取 `.cicada-rules.json` 备份。文件只包含所选规则及其条件和动作，不包含通知历史、命中次数或本机规则 ID。**文件未加密**，可能含关键词、联系人号码或动作参数，请勿公开分享。
+
+导入会先验证完整文件，确认后按备份顺序追加，不覆盖现有规则。所有导入规则默认关闭；请检查条件和动作，再在规则列表手动开启。文件保留导出时的开关状态供核对，不会以它自动启用规则。当前版不导入旧的 `.cicada` 加密文件；若仍需要旧文件，需先用能打开它的旧兼容版本恢复规则，再升级并导出新版备份。
 
 ## 许可
 

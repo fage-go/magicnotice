@@ -775,4 +775,15 @@
     <string name="rule_test_conditional">候选命中</string>
     <string name="rule_test_unchecked">未检查</string>
     <string name="rule_test_unchecked_disabled_reason">前面已有满足条件的规则；此条未检查，开关也未开启。</string>
+    <string name="rule_backup_choose_rules">请至少选择一条规则。</string>
+    <string name="rule_backup_plaintext">新版备份只包含所选规则，不含通知历史。文件未加密，可能含联系人号码、关键词或动作参数，请妥善保管，不要公开分享。</string>
+    <string name="rule_backup_export_failed">无法保存规则备份，请重新导出。</string>
+    <string name="rule_backup_picker_failed">无法打开系统文件选择器。</string>
+    <string name="rule_backup_export_done">规则备份已保存。</string>
+    <string name="rule_backup_old_file">这是旧版 .cicada 备份，不是新版规则文件，无法在此导入。</string>
+    <string name="rule_backup_confirm">将追加 %1$d 条规则，不覆盖原有规则。导入后默认关闭，请检查条件和动作后，再在规则列表手动开启。</string>
+    <string name="rule_backup_invalid">规则文件无效、损坏或无法读取，未导入。</string>
+    <string name="rule_backup_unsupported">不支持此备份格式或版本，未导入。</string>
+    <string name="rule_backup_too_large">规则文件或内容超过新版备份限制。</string>
+    <string name="rule_backup_import_done">规则已追加，默认关闭。</string>
 </resources>
