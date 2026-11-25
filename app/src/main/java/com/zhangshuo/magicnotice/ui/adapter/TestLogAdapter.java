@@ -40,7 +40,7 @@ public class TestLogAdapter extends BaseRAdapter<RuleEvaluation.Row<ConfigRuleMo
         name.setText(getContext().getString(selected ? R.string.rule_test_row_selected : R.string.rule_test_row,
                 position + 1, row.rule.getRuleName()));
         name.setTextColor(getContext().getColor(selected ? R.color.base_font_blue : R.color.base_font_title));
-        status.setText(statusLabel(row.status));
+        status.setText(statusLabel(row));
         status.setTextColor(row.status == RuleEvaluation.Status.MATCH ? Color.parseColor("#21834B")
                 : row.status == RuleEvaluation.Status.NO_MATCH ? Color.parseColor("#C5463B")
                 : row.status == RuleEvaluation.Status.POSSIBLE || row.status == RuleEvaluation.Status.CONDITIONAL_MATCH
@@ -78,8 +78,7 @@ public class TestLogAdapter extends BaseRAdapter<RuleEvaluation.Row<ConfigRuleMo
         switch (row.status) {
             case DISABLED: return getContext().getString(R.string.rule_test_disabled_reason);
             case DND: return getContext().getString(R.string.rule_test_dnd_reason);
-            case POSSIBLE: return getContext().getString(row.rule.isPolicy()
-                    ? R.string.rule_test_possible_dnd : R.string.rule_test_possible_reason);
+            case POSSIBLE: return getContext().getString(R.string.rule_test_possible_reason);
             case CONDITIONAL_MATCH: return getContext().getString(R.string.rule_test_conditional_reason);
             case MATCH: return getContext().getString(R.string.rule_test_match_reason);
             case NOT_CHECKED: return getContext().getString(row.rule.isOpen()
@@ -88,8 +87,11 @@ public class TestLogAdapter extends BaseRAdapter<RuleEvaluation.Row<ConfigRuleMo
         }
     }
 
-    private int statusLabel(RuleEvaluation.Status status) {
-        switch (status) {
+    private int statusLabel(RuleEvaluation.Row<ConfigRuleModel, ConditionsModel> row) {
+        if (row.status == RuleEvaluation.Status.NOT_CHECKED && !row.rule.isOpen()) {
+            return R.string.rule_test_disabled;
+        }
+        switch (row.status) {
             case DISABLED: return R.string.rule_test_disabled;
             case DND: return R.string.rule_test_dnd;
             case POSSIBLE: return R.string.rule_test_possible;

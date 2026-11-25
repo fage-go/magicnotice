@@ -752,11 +752,9 @@
 
     <string name="legacy_rule_exchange_unavailable">Importing or exporting legacy rules is unavailable in this build.</string>
     <string name="rule_test_winner">Matched: %1$s</string>
-    <string name="rule_test_uncertain">First match unknown: “%1$s” could match.</string>
-    <string name="rule_test_uncertain_fallback">First match unknown: “%1$s” could match. If all preceding uncertain rules miss, “%2$s” matches.</string>
     <string name="rule_test_error">Rule test failed. Try again.</string>
-    <string name="rule_test_manual">Manual input · uses current device state</string>
-    <string name="rule_test_history">Notification history · past device state not saved</string>
+    <string name="rule_test_manual">Manual input · testing with current device state</string>
+    <string name="rule_test_history">Notification history · testing with current device state</string>
     <string name="rule_test_selected">Testing “%1$s” in the full list</string>
     <string name="rule_test_row_selected">%1$d. %2$s (selected)</string>
     <string name="rule_test_row">%1$d. %2$s</string>
@@ -767,8 +765,7 @@
     <string name="rule_test_failed_reason">“%1$s” did not match.</string>
     <string name="rule_test_disabled_reason">The rule is switched off.</string>
     <string name="rule_test_dnd_reason">Skipped because Do Not Disturb is active.</string>
-    <string name="rule_test_possible_dnd">Historical Do Not Disturb state was not recorded.</string>
-    <string name="rule_test_possible_reason">Historical device state was not recorded.</string>
+    <string name="rule_test_possible_reason">A required condition could not be evaluated.</string>
     <string name="rule_test_conditional_reason">This rule matches, but an earlier rule could win.</string>
     <string name="rule_test_match_reason">This is the first enabled rule whose conditions all match.</string>
     <string name="rule_test_unchecked_reason">An earlier rule already meets its conditions.</string>

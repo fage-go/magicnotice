@@ -112,7 +112,6 @@ public class TestConfigActivity extends BaseActivity<ActivityConfigTestBinding> 
         sample.setKey(notificationInfo.getKey());
         sample.setTitle(historical ? notificationInfo.getTitle() : binding.etTitle.getText().toString());
         sample.setContent(historical ? notificationInfo.getContent() : binding.etContent.getText().toString());
-        final boolean replay = historical;
         final int revision = formRevision;
         final int generation = ++testGeneration;
         binding.tvTestResult.setVisibility(View.VISIBLE);
@@ -123,14 +122,9 @@ public class TestConfigActivity extends BaseActivity<ActivityConfigTestBinding> 
                 if (isFinishing() || isDestroyed() || generation != testGeneration || revision != formRevision) return;
                 try {
                     RuleEvaluation.Result<ConfigRuleModel, ConditionsModel> result =
-                            RuleEvaluation.evaluate(rules, new NotificationRuleInputs(sample, replay), true);
+                            RuleEvaluation.evaluate(rules, new NotificationRuleInputs(sample), true);
                     if (result.winner != null) {
                         binding.tvTestResult.setText(getString(R.string.rule_test_winner, result.winner.getRuleName()));
-                    } else if (result.firstPossible != null) {
-                        binding.tvTestResult.setText(result.conditionalWinner == null
-                                ? getString(R.string.rule_test_uncertain, result.firstPossible.getRuleName())
-                                : getString(R.string.rule_test_uncertain_fallback, result.firstPossible.getRuleName(),
-                                        result.conditionalWinner.getRuleName()));
                     } else {
                         binding.tvTestResult.setText(R.string.notification_rule_none);
                     }

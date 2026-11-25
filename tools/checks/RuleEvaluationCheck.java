@@ -37,6 +37,11 @@ public final class RuleEvaluationCheck {
         check(r.rows.stream().map(row -> row.status).collect(java.util.stream.Collectors.toList())
                 .equals(Arrays.asList(DISABLED, DND, NO_MATCH, MATCH, NOT_CHECKED)));
         check(RuleEvaluation.evaluate(ordered, new Fixture(YES), false).winner == winner);
+        // Replay the exact same candidates with the current DND state changed.
+        r = RuleEvaluation.evaluate(ordered, new Fixture(NO), true);
+        check(r.winner == respectsDnd && r.firstPossible == null && r.rows.get(1).status == MATCH);
+        r = RuleEvaluation.evaluate(ordered, new Fixture(YES), true);
+        check(r.winner == winner && r.firstPossible == null && r.rows.get(1).status == DND);
         Rule unknownClock = new Rule(true, false, UNKNOWN, NO);
         r = RuleEvaluation.evaluate(Arrays.asList(unknownClock, winner, tail), new Fixture(UNKNOWN), true);
         check(r.rows.get(0).status == NO_MATCH && r.winner == winner);

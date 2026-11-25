@@ -162,6 +162,6 @@ public class MagicProcess {
 
     private ConfigRuleModel checkFitStatus(NotificationInfo notificationInfo) {
         return RuleEvaluation.evaluate(openConfigRuleModelList,
-                new NotificationRuleInputs(notificationInfo, false), false).winner;
+                new NotificationRuleInputs(notificationInfo), false).winner;
     }
 }
